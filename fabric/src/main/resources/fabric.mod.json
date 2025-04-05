@@ -16,10 +16,10 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.cursee.examplemod.ExampleModFabric"
+            "com.cursee.overclocked_watches.OverclockedWatchesFabric"
         ],
         "client": [
-            "com.cursee.examplemod.ExampleModClientFabric"
+            "com.cursee.overclocked_watches.OverclockedWatchesClientFabric"
         ]
     },
     "mixins": [
