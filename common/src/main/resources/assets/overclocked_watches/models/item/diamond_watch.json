@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "overclocked_watches:item/diamond_watch"
+  }
+}
