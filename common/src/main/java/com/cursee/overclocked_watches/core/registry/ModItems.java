@@ -1,5 +1,7 @@
 package com.cursee.overclocked_watches.core.registry;
 
+import com.cursee.overclocked_watches.OverclockedWatches;
+import com.cursee.overclocked_watches.core.world.item.WatchItem;
 import com.cursee.overclocked_watches.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -8,14 +10,13 @@ import java.util.function.BiConsumer;
 
 public class ModItems {
 
-    // must be registered if defined
-    // public static final Item EXAMPLE_BLOCK_ITEM = new BlockItem(ModBlocks.EXAMPLE_BLOCK, new Item.Properties()); // if we want the BlockItem separate
+    public static final Item GOLDEN_WATCH = new WatchItem(WatchItem.Tier.GOLDEN);
+    public static final Item DIAMOND_WATCH = new WatchItem(WatchItem.Tier.DIAMOND);
+    public static final Item NETHERITE_WATCH = new WatchItem(WatchItem.Tier.NETHERITE);
 
     public static void register(BiConsumer<Item, ResourceLocation> consumer) {
-
-        if (Services.PLATFORM.isDevelopmentEnvironment()) {
-            // consumer.accept(EXAMPLE_BLOCK_ITEM, BuiltInRegistries.BLOCK.getKey(ModBlocks.EXAMPLE_BLOCK)); // if we want the BlockItem separate
-            // consumer.accept(new BlockItem(ModBlocks.EXAMPLE_BLOCK, new Item.Properties()), BuiltInRegistries.BLOCK.getKey(ModBlocks.EXAMPLE_BLOCK));
-        }
+        consumer.accept(GOLDEN_WATCH, OverclockedWatches.identifier("golden_watch"));
+        consumer.accept(DIAMOND_WATCH, OverclockedWatches.identifier("diamond_watch"));
+        consumer.accept(NETHERITE_WATCH, OverclockedWatches.identifier("netherite_watch"));
     }
 }

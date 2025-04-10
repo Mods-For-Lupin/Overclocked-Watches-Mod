@@ -1,5 +1,6 @@
 package com.cursee.overclocked_watches.core.registry;
 
+import com.cursee.overclocked_watches.OverclockedWatchesForge;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -21,10 +22,12 @@ public class RegistryForge {
             ModBlocks.register(consumer);
         });
         bindForItems(ModItems::register);
+        bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
+        bind(Registries.PARTICLE_TYPE, ModParticles::register);
     }
 
     private static <T> void bind(ResourceKey<Registry<T>> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterEvent event) -> {
+        OverclockedWatchesForge.EVENT_BUS.addListener((RegisterEvent event) -> {
             if (registry.equals(event.getRegistryKey())) {
                 source.accept((t, rl) -> event.register(registry, rl, () -> t));
             }
@@ -33,7 +36,7 @@ public class RegistryForge {
 
     private static final Set<Item> CREATIVE_MODE_TAB_ITEMS = new LinkedHashSet<>();
     private static void bindForItems(Consumer<BiConsumer<Item, ResourceLocation>> source) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterEvent event) -> {
+        OverclockedWatchesForge.EVENT_BUS.addListener((RegisterEvent event) -> {
             if (event.getRegistryKey().equals(Registries.ITEM)) {
                 source.accept((t, rl) -> {
                     CREATIVE_MODE_TAB_ITEMS.add(t);
