@@ -2,22 +2,31 @@ package com.cursee.overclocked_watches;
 
 import com.cursee.monolib.core.sailing.Sailing;
 import com.cursee.overclocked_watches.client.KeyInputHandlerForge;
+import com.cursee.overclocked_watches.core.CommonConfigValues;
+import com.cursee.overclocked_watches.core.ForgeCommonConfigHandler;
 import com.cursee.overclocked_watches.core.curio.WearableWatchCurio;
+import com.cursee.overclocked_watches.core.util.TimeManager;
 import com.cursee.overclocked_watches.core.world.item.WatchItem;
 import com.cursee.overclocked_watches.core.network.ModMessagesForge;
 import com.cursee.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket;
 import com.cursee.overclocked_watches.core.registry.RegistryForge;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.common.capability.CurioItemCapability;
+
+import java.util.function.Consumer;
 
 @Mod(Constants.MOD_ID)
 public class OverclockedWatchesForge {
@@ -29,6 +38,8 @@ public class OverclockedWatchesForge {
         // Sailing.register(Constants.MOD_NAME, Constants.MOD_ID, Constants.MOD_VERSION, Constants.MC_VERSION_RAW, Constants.PUBLISHER_AUTHOR, Constants.PRIMARY_CURSEFORGE_MODRINTH);
         Sailing.register(Constants.MOD_ID, Constants.MOD_NAME, Constants.MOD_VERSION, Constants.MOD_PUBLISHER, Constants.MOD_URL);
 
+        ForgeCommonConfigHandler.onLoad();
+
         EVENT_BUS = context.getModEventBus();
 
         RegistryForge.register(EVENT_BUS);
@@ -38,6 +49,19 @@ public class OverclockedWatchesForge {
         MinecraftForge.EVENT_BUS.addListener(this::onKeyInput);
 
         ModMessagesForge.register();
+
+        MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.ServerTickEvent>) consumer -> {
+            if (consumer.phase == TickEvent.Phase.END) return;
+            MinecraftServer server = consumer.getServer();
+            // if (server.getTickCount() % 2 != 0) return;
+            if (CommonConfigValues.use_long_time_delta && TimeManager.shouldOperate()) TimeManager.operate(server.overworld());
+        });
+
+        MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.ClientTickEvent>) consumer -> {
+            if (consumer.phase == TickEvent.Phase.END || Minecraft.getInstance().level == null) return;
+            // if (server.getTickCount() % 2 != 0) return;
+            if (CommonConfigValues.use_long_time_delta && TimeManager.shouldOperate()) TimeManager.operate(Minecraft.getInstance().level);
+        });
     }
 
     private void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {

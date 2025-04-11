@@ -2,9 +2,11 @@ package com.cursee.overclocked_watches.core.network.packet;
 
 import com.cursee.overclocked_watches.core.CommonConfigValues;
 import com.cursee.overclocked_watches.core.registry.ModItems;
+import com.cursee.overclocked_watches.core.util.TimeManager;
 import com.cursee.overclocked_watches.platform.Services;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -12,6 +14,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +49,7 @@ public class FabricDayNightC2SPacket {
             watch.save(data);
 
             addTime(server, CommonConfigValues.netherite_time_advancement_ticks);
-            applyCooldowns(player, (int) CommonConfigValues.netherite_watch_cooldown_minutes);
+            applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.netherite_watch_cooldown_minutes);
         }
         else if (hasDiamondWatch) {
             ItemStack watch = Services.PLATFORM.getEquippedDiamondWatch(player);
@@ -59,7 +63,7 @@ public class FabricDayNightC2SPacket {
             watch.save(data);
 
             addTime(server, CommonConfigValues.diamond_time_advancement_ticks);
-            applyCooldowns(player, (int) CommonConfigValues.diamond_watch_cooldown_minutes);
+            applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.diamond_watch_cooldown_minutes);
         }
         else if (hasGoldenWatch) {
             ItemStack watch = Services.PLATFORM.getEquippedGoldenWatch(player);
@@ -73,9 +77,11 @@ public class FabricDayNightC2SPacket {
             watch.save(data);
 
             addTime(server, CommonConfigValues.golden_time_advancement_ticks);
-            applyCooldowns(player, (int) CommonConfigValues.golden_watch_cooldown_minutes);
+            applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.golden_watch_cooldown_minutes);
         }
 
+        player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
+        player.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
         player.sendSystemMessage(Component.translatable("magic.overclocked_watches.charge_consumed"));
     }
 
@@ -87,7 +93,9 @@ public class FabricDayNightC2SPacket {
 
     public static void addTime(MinecraftServer pSource, long pAmount) {
         for(ServerLevel level : pSource.getAllLevels()) {
-            level.setDayTime(level.getDayTime() + pAmount);
+            if (!CommonConfigValues.use_long_time_delta) level.setDayTime(level.getDayTime() + pAmount);
         }
+
+        if (CommonConfigValues.use_long_time_delta) TimeManager.addToRemainingTime((int) pAmount);
     }
 }

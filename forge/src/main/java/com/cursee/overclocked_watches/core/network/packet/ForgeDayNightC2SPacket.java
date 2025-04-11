@@ -2,11 +2,17 @@ package com.cursee.overclocked_watches.core.network.packet;
 
 import com.cursee.overclocked_watches.core.CommonConfigValues;
 import com.cursee.overclocked_watches.core.registry.ModItems;
+import com.cursee.overclocked_watches.core.util.TimeManager;
 import com.cursee.overclocked_watches.platform.Services;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
@@ -30,6 +36,7 @@ public class ForgeDayNightC2SPacket {
             if (!CommonConfigValues.day_night_cycle_allowed) return;
 
             ServerPlayer player = context.getSender();
+            if (player.getServer() == null) return;
 
             // player has watch variant equipped
             final boolean hasNetheriteWatch = Services.PLATFORM.playerHasNetheriteWatchEquipped(player);
@@ -42,11 +49,7 @@ public class ForgeDayNightC2SPacket {
             if (WATCHES_ON_COOLDOWN) return;
 
             if (hasNetheriteWatch) {
-                player.serverLevel().setDayTime((player.serverLevel().getDayTime() + CommonConfigValues.netherite_time_advancement_ticks) % 24_000L);
                 ItemStack equippedWatch = Services.PLATFORM.getEquippedNetheriteWatch(player);
-                // equippedWatch.hurt(1, player.getRandom(), player);
-                // if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) equippedWatch.shrink(1);
-                applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.netherite_watch_cooldown_minutes);
 
                 CompoundTag validatedStackData = equippedWatch.getOrCreateTag();
                 final int newChargeCount = validatedStackData.getInt(CHARGES) - 1;
@@ -54,13 +57,12 @@ public class ForgeDayNightC2SPacket {
                 validatedStackData.putInt(CHARGES, newChargeCount);
                 equippedWatch.save(validatedStackData);
                 // we have consumed a charge
+
+                applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.netherite_watch_cooldown_minutes);
+                addTime(player.getServer(), CommonConfigValues.netherite_time_advancement_ticks);
             }
             else if (hasDiamondWatch) {
-                player.serverLevel().setDayTime((player.serverLevel().getDayTime() + CommonConfigValues.diamond_time_advancement_ticks) % 24_000L);
                 ItemStack equippedWatch = Services.PLATFORM.getEquippedDiamondWatch(player);
-                // equippedWatch.hurt(1, player.getRandom(), player);
-                // if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) equippedWatch.shrink(1);
-                applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.diamond_watch_cooldown_minutes);
 
                 CompoundTag validatedStackData = equippedWatch.getOrCreateTag();
                 final int newChargeCount = validatedStackData.getInt(CHARGES) - 1;
@@ -68,13 +70,12 @@ public class ForgeDayNightC2SPacket {
                 validatedStackData.putInt(CHARGES, newChargeCount);
                 equippedWatch.save(validatedStackData);
                 // we have consumed a charge
+
+                applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.diamond_watch_cooldown_minutes);
+                addTime(player.getServer(), CommonConfigValues.diamond_time_advancement_ticks);
             }
             else if (hasGoldenWatch) {
-                player.serverLevel().setDayTime((player.serverLevel().getDayTime() + CommonConfigValues.golden_time_advancement_ticks) % 24_000L);
                 ItemStack equippedWatch = Services.PLATFORM.getEquippedGoldenWatch(player);
-                // equippedWatch.hurt(1, player.getRandom(), player);
-                // if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) equippedWatch.shrink(1);
-                applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.golden_watch_cooldown_minutes);
 
                 CompoundTag validatedStackData = equippedWatch.getOrCreateTag();
                 final int newChargeCount = validatedStackData.getInt(CHARGES) - 1;
@@ -82,8 +83,13 @@ public class ForgeDayNightC2SPacket {
                 validatedStackData.putInt(CHARGES, newChargeCount);
                 equippedWatch.save(validatedStackData);
                 // we have consumed a charge
+
+                applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.golden_watch_cooldown_minutes);
+                addTime(player.getServer(), CommonConfigValues.golden_time_advancement_ticks);
             }
 
+            player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
+            player.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
             player.sendSystemMessage(Component.translatable("magic.overclocked_watches.charge_consumed"));
         });
 
@@ -94,5 +100,13 @@ public class ForgeDayNightC2SPacket {
         player.getCooldowns().addCooldown(ModItems.NETHERITE_WATCH, lengthInTicks);
         player.getCooldowns().addCooldown(ModItems.DIAMOND_WATCH, lengthInTicks);
         player.getCooldowns().addCooldown(ModItems.GOLDEN_WATCH, lengthInTicks);
+    }
+
+    public static void addTime(MinecraftServer pSource, long pAmount) {
+        for(ServerLevel level : pSource.getAllLevels()) {
+            if (!CommonConfigValues.use_long_time_delta) level.setDayTime(level.getDayTime() + pAmount);
+        }
+
+        if (CommonConfigValues.use_long_time_delta) TimeManager.addToRemainingTime((int) pAmount);
     }
 }
