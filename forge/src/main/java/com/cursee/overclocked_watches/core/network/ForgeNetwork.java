@@ -2,13 +2,23 @@ package com.cursee.overclocked_watches.core.network;
 
 import com.cursee.overclocked_watches.Constants;
 import com.cursee.overclocked_watches.OverclockedWatches;
+import com.cursee.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
 import com.cursee.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-public class ModMessagesForge {
+public class ForgeNetwork {
+
+//    private static final String PROTOCOL_VERSION = "1";
+//    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+//            OverclockedWatches.identifier(Constants.MOD_ID),
+//            () -> PROTOCOL_VERSION,
+//            PROTOCOL_VERSION::equals,
+//            PROTOCOL_VERSION::equals
+//    );
 
     private static SimpleChannel INSTANCE;
 
@@ -18,6 +28,7 @@ public class ModMessagesForge {
     }
 
     public static void register() {
+
         SimpleChannel net = NetworkRegistry.ChannelBuilder
                 .named(OverclockedWatches.identifier("messages"))
                 .networkProtocolVersion(() -> "1.0")
@@ -32,8 +43,21 @@ public class ModMessagesForge {
                 .encoder(ForgeDayNightC2SPacket::toBytes)
                 .consumerMainThread(ForgeDayNightC2SPacket::handle)
                 .add();
+
+        net.messageBuilder(ForgeConfigSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ForgeConfigSyncS2CPacket::decode)
+                .encoder(ForgeConfigSyncS2CPacket::encode)
+                .consumerMainThread(ForgeConfigSyncS2CPacket::handle)
+                .add();
+
+        // net.registerMessage(id(), ForgeConfigSyncS2CPacket.class, ForgeConfigSyncS2CPacket::encode, ForgeConfigSyncS2CPacket::decode, ForgeConfigSyncS2CPacket::handle);
     }
+
     public static <MSG> void sendToServer(MSG message) {
         INSTANCE.sendToServer(message);
+    }
+
+    public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
+        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 }

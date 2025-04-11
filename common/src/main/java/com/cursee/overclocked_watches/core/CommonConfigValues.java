@@ -6,7 +6,7 @@ public class CommonConfigValues {
     public static long default_day_night_key = 79;
 
     public static boolean use_long_time_delta = false;
-    public static long long_time_delta = 1000L; // 500 ? (also ever 5 ticks ????)
+    public static long long_time_delta = 100L; // 500 ? (also ever 5 ticks ????)
 
     public static long golden_watch_durability = 100L;
     public static long diamond_watch_durability = 300L;

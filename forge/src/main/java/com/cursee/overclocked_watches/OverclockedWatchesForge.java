@@ -5,20 +5,22 @@ import com.cursee.overclocked_watches.client.KeyInputHandlerForge;
 import com.cursee.overclocked_watches.core.CommonConfigValues;
 import com.cursee.overclocked_watches.core.ForgeCommonConfigHandler;
 import com.cursee.overclocked_watches.core.curio.WearableWatchCurio;
+import com.cursee.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
 import com.cursee.overclocked_watches.core.util.TimeManager;
 import com.cursee.overclocked_watches.core.world.item.WatchItem;
-import com.cursee.overclocked_watches.core.network.ModMessagesForge;
+import com.cursee.overclocked_watches.core.network.ForgeNetwork;
 import com.cursee.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket;
 import com.cursee.overclocked_watches.core.registry.RegistryForge;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -48,7 +50,29 @@ public class OverclockedWatchesForge {
         MinecraftForge.EVENT_BUS.addGenericListener(ItemStack.class, this::onAttachCapabilities);
         MinecraftForge.EVENT_BUS.addListener(this::onKeyInput);
 
-        ModMessagesForge.register();
+        ForgeNetwork.register();
+
+        MinecraftForge.EVENT_BUS.addListener((Consumer<EntityJoinLevelEvent>) event -> {
+            if (!(event.getEntity() instanceof ServerPlayer player)) return;
+            ForgeNetwork.sendToPlayer(new ForgeConfigSyncS2CPacket(
+                    CommonConfigValues.day_night_cycle_allowed,
+                    CommonConfigValues.default_day_night_key,
+                    CommonConfigValues.use_long_time_delta,
+                    CommonConfigValues.long_time_delta,
+                    CommonConfigValues.golden_watch_durability,
+                    CommonConfigValues.diamond_watch_durability,
+                    CommonConfigValues.netherite_watch_durability,
+                    CommonConfigValues.golden_watch_charges,
+                    CommonConfigValues.diamond_watch_charges,
+                    CommonConfigValues.netherite_watch_charges,
+                    CommonConfigValues.golden_watch_cooldown_minutes,
+                    CommonConfigValues.diamond_watch_cooldown_minutes,
+                    CommonConfigValues.netherite_watch_cooldown_minutes,
+                    CommonConfigValues.golden_time_advancement_ticks,
+                    CommonConfigValues.diamond_time_advancement_ticks,
+                    CommonConfigValues.netherite_time_advancement_ticks
+            ), player);
+        });
 
         MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.ServerTickEvent>) consumer -> {
             if (consumer.phase == TickEvent.Phase.END) return;
@@ -72,7 +96,7 @@ public class OverclockedWatchesForge {
 
     private void onKeyInput(InputEvent.Key event) {
         if(KeyInputHandlerForge.dayNightKey.consumeClick()) {
-            ModMessagesForge.sendToServer(new ForgeDayNightC2SPacket());
+            ForgeNetwork.sendToServer(new ForgeDayNightC2SPacket());
         }
     }
 }

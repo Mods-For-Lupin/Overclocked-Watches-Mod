@@ -3,6 +3,7 @@ package com.cursee.overclocked_watches;
 import com.cursee.overclocked_watches.client.entity.renderer.TrinketRenderers;
 import com.cursee.overclocked_watches.client.item.RendererLayers;
 import com.cursee.overclocked_watches.client.item.RendererUtil;
+import com.cursee.overclocked_watches.client.network.packet.FabricConfigSyncClientHandler;
 import com.cursee.overclocked_watches.core.CommonConfigValues;
 import com.cursee.overclocked_watches.core.network.FabricNetwork;
 import com.cursee.overclocked_watches.core.registry.ModParticles;
@@ -18,7 +19,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.server.packs.PackType;
-import org.lwjgl.glfw.GLFW;
 
 public class OverclockedWatchesClientFabric implements ClientModInitializer {
 
@@ -27,6 +27,9 @@ public class OverclockedWatchesClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         OverclockedWatchesClient.init();
+
+        ClientPlayNetworking.registerGlobalReceiver(FabricNetwork.Packets.CONFIG_SYNC_S2C, FabricConfigSyncClientHandler::registerS2CPacketHandler);
+
         OverclockedWatchesClientFabric.registerModelLayers(); // here
 
         ParticleFactoryRegistry.getInstance().register(ModParticles.GOLDEN_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
@@ -43,7 +46,7 @@ public class OverclockedWatchesClientFabric implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (dayNightKey.consumeClick()) {
-                ClientPlayNetworking.send(FabricNetwork.Packets.DAY_NIGHT, PacketByteBufs.create());
+                ClientPlayNetworking.send(FabricNetwork.Packets.DAY_NIGHT_C2S, PacketByteBufs.create());
             }
         });
     }
