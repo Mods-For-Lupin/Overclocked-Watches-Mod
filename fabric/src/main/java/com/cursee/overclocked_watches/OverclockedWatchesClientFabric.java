@@ -7,6 +7,7 @@ import com.cursee.overclocked_watches.client.network.packet.FabricConfigSyncClie
 import com.cursee.overclocked_watches.core.CommonConfigValues;
 import com.cursee.overclocked_watches.core.network.FabricNetwork;
 import com.cursee.overclocked_watches.core.registry.ModParticles;
+import com.cursee.overclocked_watches.core.util.TimeManager;
 import com.cursee.overclocked_watches.core.world.particle.WatchGrowthParticle;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
@@ -48,6 +49,10 @@ public class OverclockedWatchesClientFabric implements ClientModInitializer {
             if (dayNightKey.consumeClick()) {
                 ClientPlayNetworking.send(FabricNetwork.Packets.DAY_NIGHT_C2S, PacketByteBufs.create());
             }
+        });
+
+        ClientTickEvents.START_WORLD_TICK.register(clientLevel -> {
+            if (CommonConfigValues.use_long_time_delta && TimeManager.shouldOperate()) TimeManager.operate(clientLevel);
         });
     }
 
