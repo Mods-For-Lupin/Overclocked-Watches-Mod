@@ -6,14 +6,18 @@ import com.cursee.overclocked_watches.core.CommonConfigValues;
 import com.cursee.overclocked_watches.core.ForgeCommonConfigHandler;
 import com.cursee.overclocked_watches.core.curio.WearableWatchCurio;
 import com.cursee.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
+import com.cursee.overclocked_watches.core.util.OverclockedWatchesUtil;
 import com.cursee.overclocked_watches.core.util.TimeManager;
 import com.cursee.overclocked_watches.core.world.item.WatchItem;
 import com.cursee.overclocked_watches.core.network.ForgeNetwork;
 import com.cursee.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket;
 import com.cursee.overclocked_watches.core.registry.RegistryForge;
+import com.cursee.overclocked_watches.platform.Services;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -21,6 +25,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -85,6 +90,17 @@ public class OverclockedWatchesForge {
             if (consumer.phase == TickEvent.Phase.END || Minecraft.getInstance().level == null) return;
             // if (server.getTickCount() % 2 != 0) return;
             if (CommonConfigValues.use_long_time_delta && TimeManager.shouldOperate()) TimeManager.operate(Minecraft.getInstance().level);
+        });
+
+        MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) consumer -> {
+            Player player = consumer.getEntity();
+            OverclockedWatchesUtil.loadCooldowns(player.getPersistentData(), player);
+        });
+
+        MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.Clone>) consumer -> {
+            CompoundTag temp = new CompoundTag();
+            OverclockedWatchesUtil.saveCooldowns(temp, consumer.getOriginal());
+            OverclockedWatchesUtil.loadCooldowns(temp, consumer.getEntity());
         });
     }
 

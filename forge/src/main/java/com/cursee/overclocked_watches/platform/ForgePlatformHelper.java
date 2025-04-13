@@ -1,24 +1,34 @@
 package com.cursee.overclocked_watches.platform;
 
+import com.cursee.overclocked_watches.Constants;
 import com.cursee.overclocked_watches.client.item.renderer.IWatchRenderer;
 import com.cursee.overclocked_watches.core.registry.ModItems;
+import com.cursee.overclocked_watches.core.util.CoolDownRecord;
+import com.cursee.overclocked_watches.core.util.IItemCooldowns;
 import com.cursee.overclocked_watches.platform.services.IPlatformHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -127,6 +137,16 @@ public class ForgePlatformHelper implements IPlatformHelper {
         CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> iCuriosItemHandler.findFirstCurio(ModItems.GOLDEN_WATCH).ifPresent(slotResult -> itemStackReference.set(slotResult.stack())));
 
         return itemStackReference.get();
+    }
+
+    @Override
+    public Item getItemFromRL(ResourceLocation rl) {
+        return ForgeRegistries.ITEMS.getValue(rl);
+    }
+
+    @Override
+    public ResourceLocation getRLFromItem(Item item) {
+        return ForgeRegistries.ITEMS.getKey(item);
     }
 
     private record WatchCurioRenderer(IWatchRenderer renderer) implements ICurioRenderer {

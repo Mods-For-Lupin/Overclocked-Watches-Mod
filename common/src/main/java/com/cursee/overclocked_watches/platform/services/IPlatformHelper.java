@@ -1,6 +1,8 @@
 package com.cursee.overclocked_watches.platform.services;
 
 import com.cursee.overclocked_watches.client.item.renderer.IWatchRenderer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -55,4 +57,7 @@ public interface IPlatformHelper {
     ItemStack getEquippedNetheriteWatch(Player player);
     ItemStack getEquippedDiamondWatch(Player player);
     ItemStack getEquippedGoldenWatch(Player player);
+
+    Item getItemFromRL(ResourceLocation rl);
+    ResourceLocation getRLFromItem(Item item);
 }

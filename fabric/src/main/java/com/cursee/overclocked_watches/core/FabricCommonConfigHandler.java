@@ -56,23 +56,6 @@ public class FabricCommonConfigHandler {
         CommonConfigValues.golden_time_advancement_ticks = toml.getLong("golden_time_advancement_ticks");
         CommonConfigValues.diamond_time_advancement_ticks = toml.getLong("diamond_time_advancement_ticks");
         CommonConfigValues.netherite_time_advancement_ticks = toml.getLong("netherite_time_advancement_ticks");
-
-        System.out.println("CommonConfigValues.day_night_cycle_allowed: " + CommonConfigValues.day_night_cycle_allowed);
-        System.out.println("CommonConfigValues.default_day_night_key: " + CommonConfigValues.default_day_night_key);
-        System.out.println("CommonConfigValues.use_long_time_delta: " + CommonConfigValues.use_long_time_delta);
-        System.out.println("CommonConfigValues.long_time_delta: " + CommonConfigValues.long_time_delta);
-        System.out.println("CommonConfigValues.golden_watch_durability: " + CommonConfigValues.golden_watch_durability);
-        System.out.println("CommonConfigValues.diamond_watch_durability: " + CommonConfigValues.diamond_watch_durability);
-        System.out.println("CommonConfigValues.netherite_watch_durability: " + CommonConfigValues.netherite_watch_durability);
-        System.out.println("CommonConfigValues.golden_watch_charges: " + CommonConfigValues.golden_watch_charges);
-        System.out.println("CommonConfigValues.diamond_watch_charges: " + CommonConfigValues.diamond_watch_charges);
-        System.out.println("CommonConfigValues.netherite_watch_charges: " + CommonConfigValues.netherite_watch_charges);
-        System.out.println("CommonConfigValues.golden_watch_cooldown_minutes: " + CommonConfigValues.golden_watch_cooldown_minutes);
-        System.out.println("CommonConfigValues.diamond_watch_cooldown_minutes: " + CommonConfigValues.diamond_watch_cooldown_minutes);
-        System.out.println("CommonConfigValues.netherite_watch_cooldown_minutes: " + CommonConfigValues.netherite_watch_cooldown_minutes);
-        System.out.println("CommonConfigValues.golden_time_advancement_ticks: " + CommonConfigValues.golden_time_advancement_ticks);
-        System.out.println("CommonConfigValues.diamond_time_advancement_ticks: " + CommonConfigValues.diamond_time_advancement_ticks);
-        System.out.println("CommonConfigValues.netherite_time_advancement_ticks: " + CommonConfigValues.netherite_time_advancement_ticks);
     }
 
     public static final Map<String, Object> defaults = new LinkedHashMap<>();

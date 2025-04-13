@@ -1,7 +1,10 @@
 package com.cursee.overclocked_watches.platform;
 
+import com.cursee.overclocked_watches.Constants;
 import com.cursee.overclocked_watches.client.item.renderer.IWatchRenderer;
 import com.cursee.overclocked_watches.core.registry.ModItems;
+import com.cursee.overclocked_watches.core.util.CoolDownRecord;
+import com.cursee.overclocked_watches.core.util.IItemCooldowns;
 import com.cursee.overclocked_watches.platform.services.IPlatformHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.trinkets.api.SlotReference;
@@ -10,13 +13,21 @@ import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -124,6 +135,16 @@ public class FabricPlatformHelper implements IPlatformHelper {
         TrinketsApi.getTrinketComponent(player).ifPresent(trinketComponent -> trinketComponent.getEquipped(ModItems.GOLDEN_WATCH).forEach(slotReferenceItemStackTuple -> itemStackReference.set(slotReferenceItemStackTuple.getB())));
 
         return itemStackReference.get();
+    }
+
+    @Override
+    public Item getItemFromRL(ResourceLocation rl) {
+        return BuiltInRegistries.ITEM.get(rl);
+    }
+
+    @Override
+    public ResourceLocation getRLFromItem(Item item) {
+        return BuiltInRegistries.ITEM.getKey(item);
     }
 
     private record WatchTrinketRenderer(IWatchRenderer renderer) implements TrinketRenderer {
