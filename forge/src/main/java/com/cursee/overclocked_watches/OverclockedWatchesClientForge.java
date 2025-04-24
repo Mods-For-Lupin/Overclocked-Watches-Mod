@@ -6,20 +6,31 @@ import com.cursee.overclocked_watches.client.item.RendererLayers;
 import com.cursee.overclocked_watches.client.item.RendererUtil;
 import com.cursee.overclocked_watches.client.item.model.ArmsModel;
 import com.cursee.overclocked_watches.client.item.renderer.WatchRenderer;
+import com.cursee.overclocked_watches.core.CommonConfigValues;
+import com.cursee.overclocked_watches.core.network.ForgeNetwork;
+import com.cursee.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket;
 import com.cursee.overclocked_watches.core.registry.ModItems;
 import com.cursee.overclocked_watches.core.registry.ModParticles;
+import com.cursee.overclocked_watches.core.util.TimeManager;
 import com.cursee.overclocked_watches.core.world.particle.WatchGrowthParticle;
 import com.cursee.overclocked_watches.mixin.LivingEntityRendererAccessor;
 import com.cursee.overclocked_watches.platform.Services;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -27,6 +38,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import top.theillusivec4.curios.client.render.CuriosLayer;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class OverclockedWatchesClientForge {
 
@@ -53,6 +65,13 @@ public class OverclockedWatchesClientForge {
         modEventBus.addListener(this::onRegisterKeyMappings);
 
         ArmRenderHandler.setup();
+
+        MinecraftForge.EVENT_BUS.addListener(this::onKeyInput);
+        MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.ClientTickEvent>) consumer -> {
+            if (consumer.phase == TickEvent.Phase.END || Minecraft.getInstance().level == null) return;
+            // if (server.getTickCount() % 2 != 0) return;
+            if (CommonConfigValues.use_long_time_delta && TimeManager.CLIENT.shouldOperate()) TimeManager.CLIENT.operate(Minecraft.getInstance().level);
+        });
     }
 
     public void onRegisterEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -107,5 +126,35 @@ public class OverclockedWatchesClientForge {
 
     public void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(KeyInputHandlerForge.dayNightKey);
+    }
+
+    private void onKeyInput(InputEvent.Key event) {
+
+        if(KeyInputHandlerForge.dayNightKey.consumeClick()) {
+            Minecraft client = Minecraft.getInstance();
+            ClientLevel level = client.level;
+            LocalPlayer player = client.player;
+            if (level == null || player == null) return;
+
+            long pAmount = CommonConfigValues.golden_time_advancement_ticks;
+
+            Item item = client.player.getMainHandItem().getItem();
+            if (item == ModItems.DIAMOND_WATCH) pAmount = CommonConfigValues.diamond_time_advancement_ticks;
+            if (item == ModItems.NETHERITE_WATCH) pAmount = CommonConfigValues.netherite_time_advancement_ticks;
+
+            if (!CommonConfigValues.use_long_time_delta) {
+                level.setDayTime(level.getDayTime() + pAmount);
+            }
+            else {
+                TimeManager.CLIENT.addToRemainingTime((int) pAmount);
+            }
+
+            // player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
+            // player.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
+            player.playSound(SoundEvents.BELL_BLOCK, 1, 1);
+            player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
+
+            ForgeNetwork.sendToServer(new ForgeDayNightC2SPacket());
+        }
     }
 }

@@ -26,21 +26,32 @@ public class FabricDayNightC2SPacket {
 
     public static void handle(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl listener, FriendlyByteBuf packetData, PacketSender sender) {
 
+        System.out.println("handling packet");
+
         if (!CommonConfigValues.day_night_cycle_allowed) return;
 
         boolean hasNetheriteWatch = Services.PLATFORM.playerHasNetheriteWatchEquipped(player);
         boolean hasDiamondWatch = Services.PLATFORM.playerHasDiamondWatchEquipped(player);
         boolean hasGoldenWatch = Services.PLATFORM.playerHasGoldenWatchEquipped(player);
-        if (!(hasNetheriteWatch || hasDiamondWatch || hasGoldenWatch)) return;
+        if (!(hasNetheriteWatch || hasDiamondWatch || hasGoldenWatch)) {
+            System.out.println("returned early, no watch equipped");
+            return;
+        }
 
         ItemCooldowns cooldowns = player.getCooldowns();
         boolean onCooldown = cooldowns.isOnCooldown(ModItems.NETHERITE_WATCH) || cooldowns.isOnCooldown(ModItems.DIAMOND_WATCH) || cooldowns.isOnCooldown(ModItems.GOLDEN_WATCH);
-        if (onCooldown) return;
+        if (onCooldown) {
+            System.out.println("returned early, watches on cooldown");
+            return;
+        }
 
         if (hasNetheriteWatch) {
             ItemStack watch = Services.PLATFORM.getEquippedNetheriteWatch(player);
             CompoundTag data = watch.getOrCreateTag();
-            if (data.getInt(CHARGES) == 0) return; // validate charges on watch
+            if (data.getInt(CHARGES) == 0) {
+                System.out.println("returned early, no charges on watch");
+                return; // validate charges on watch
+            }
 
             // consumer charge from watch
             int newCharges = data.getInt(CHARGES) - 1;
@@ -79,9 +90,6 @@ public class FabricDayNightC2SPacket {
             addTime(server, CommonConfigValues.golden_time_advancement_ticks);
             applyCooldowns(player, 20 * 60 * (int) CommonConfigValues.golden_watch_cooldown_minutes);
         }
-
-        player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
-        player.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
         player.sendSystemMessage(Component.translatable("magic.overclocked_watches.charge_consumed"));
     }
 
@@ -96,6 +104,7 @@ public class FabricDayNightC2SPacket {
             if (!CommonConfigValues.use_long_time_delta) level.setDayTime(level.getDayTime() + pAmount);
         }
 
-        if (CommonConfigValues.use_long_time_delta) TimeManager.addToRemainingTime((int) pAmount);
+        System.out.println("added to server time manager: " + pAmount);
+        if (CommonConfigValues.use_long_time_delta) TimeManager.SERVER.addToRemainingTime((int) pAmount);
     }
 }

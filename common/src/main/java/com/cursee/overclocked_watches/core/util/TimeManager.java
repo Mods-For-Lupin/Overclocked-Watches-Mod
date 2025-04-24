@@ -7,26 +7,35 @@ import net.minecraft.server.level.ServerLevel;
 
 public class TimeManager {
 
-    public static int remainingTime = 0;
+    public static TimeManager SERVER = null;
+    public static TimeManager CLIENT = null;
 
-    public static void addToRemainingTime(int value) {
+    private int remainingTime = 0;
+
+    public int getRemainingTime() {
+        return remainingTime;
+    }
+
+    public void addToRemainingTime(int value) {
         remainingTime += value;
     }
 
-    public static void decrementRemainingTime() {
+    public void decrementRemainingTime() {
         if (shouldOperate()) remainingTime -= Math.toIntExact(CommonConfigValues.long_time_delta);
     }
 
-    public static boolean shouldOperate() {
+    public boolean shouldOperate() {
         return remainingTime >= CommonConfigValues.long_time_delta;
     }
 
-    public static void operate(ServerLevel level) {
+    public void operate(ServerLevel level) {
+        // System.out.println("operating on server");
         level.setDayTime((level.getDayTime() + CommonConfigValues.long_time_delta) % 24_000L);
         decrementRemainingTime();
     }
 
-    public static void operate(ClientLevel level) {
+    public void operate(ClientLevel level) {
+        // System.out.println("operating on client");
         level.setDayTime((level.getDayTime() + CommonConfigValues.long_time_delta) % 24_000L);
         decrementRemainingTime();
     }

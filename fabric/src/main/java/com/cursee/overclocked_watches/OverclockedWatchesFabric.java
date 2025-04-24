@@ -56,7 +56,8 @@ public class OverclockedWatchesFabric implements ModInitializer {
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             // if (server.getTickCount() % 2 != 0) return;
-            if (CommonConfigValues.use_long_time_delta && TimeManager.shouldOperate()) TimeManager.operate(server.overworld());
+            if (TimeManager.SERVER == null) TimeManager.SERVER = new TimeManager();
+            if (CommonConfigValues.use_long_time_delta && TimeManager.SERVER.shouldOperate()) TimeManager.SERVER.operate(server.overworld());
         });
     }
 }

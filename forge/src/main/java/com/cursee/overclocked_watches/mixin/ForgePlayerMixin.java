@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Mixin(Player.class)
 public class ForgePlayerMixin {
 
-    @Inject(method = "tick", at = @At("TAIL"))
+    @Inject(method = "tick()V", at = @At("TAIL"))
     private void injected_$_onTick(CallbackInfo ci) {
 
         Player instancePlayer = (Player) (Object) this;

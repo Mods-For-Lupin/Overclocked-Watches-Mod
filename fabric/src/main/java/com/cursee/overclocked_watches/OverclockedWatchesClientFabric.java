@@ -6,6 +6,7 @@ import com.cursee.overclocked_watches.client.item.RendererUtil;
 import com.cursee.overclocked_watches.client.network.packet.FabricConfigSyncClientHandler;
 import com.cursee.overclocked_watches.core.CommonConfigValues;
 import com.cursee.overclocked_watches.core.network.FabricNetwork;
+import com.cursee.overclocked_watches.core.registry.ModItems;
 import com.cursee.overclocked_watches.core.registry.ModParticles;
 import com.cursee.overclocked_watches.core.util.TimeManager;
 import com.cursee.overclocked_watches.core.world.particle.WatchGrowthParticle;
@@ -19,7 +20,15 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.Item;
 
 public class OverclockedWatchesClientFabric implements ClientModInitializer {
 
@@ -46,13 +55,38 @@ public class OverclockedWatchesClientFabric implements ClientModInitializer {
                 Constants.KEY_CATEGORY_DAY_NIGHT));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+
             if (dayNightKey.consumeClick()) {
+
+                ClientLevel level = client.level;
+                LocalPlayer player = client.player;
+                if (level == null || player == null) return;
+
+                long pAmount = CommonConfigValues.golden_time_advancement_ticks;
+
+                Item item = client.player.getMainHandItem().getItem();
+                if (item == ModItems.DIAMOND_WATCH) pAmount = CommonConfigValues.diamond_time_advancement_ticks;
+                if (item == ModItems.NETHERITE_WATCH) pAmount = CommonConfigValues.netherite_time_advancement_ticks;
+
+                if (!CommonConfigValues.use_long_time_delta) {
+                    level.setDayTime(level.getDayTime() + pAmount);
+                }
+                else {
+                    TimeManager.CLIENT.addToRemainingTime((int) pAmount);
+                }
+
+                // player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
+                // player.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
+                player.playSound(SoundEvents.BELL_BLOCK, 1, 1);
+                player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
+
+                System.out.println("sending packet");
                 ClientPlayNetworking.send(FabricNetwork.Packets.DAY_NIGHT_C2S, PacketByteBufs.create());
             }
         });
 
         ClientTickEvents.START_WORLD_TICK.register(clientLevel -> {
-            if (CommonConfigValues.use_long_time_delta && TimeManager.shouldOperate()) TimeManager.operate(clientLevel);
+            if (CommonConfigValues.use_long_time_delta && TimeManager.CLIENT.shouldOperate()) TimeManager.CLIENT.operate(clientLevel);
         });
     }
 

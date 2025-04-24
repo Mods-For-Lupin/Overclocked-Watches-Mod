@@ -107,6 +107,6 @@ public class ForgeDayNightC2SPacket {
             if (!CommonConfigValues.use_long_time_delta) level.setDayTime(level.getDayTime() + pAmount);
         }
 
-        if (CommonConfigValues.use_long_time_delta) TimeManager.addToRemainingTime((int) pAmount);
+        if (CommonConfigValues.use_long_time_delta) TimeManager.SERVER.addToRemainingTime((int) pAmount);
     }
 }

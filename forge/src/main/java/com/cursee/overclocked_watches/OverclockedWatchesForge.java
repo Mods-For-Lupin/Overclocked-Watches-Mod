@@ -53,7 +53,6 @@ public class OverclockedWatchesForge {
         if (FMLEnvironment.dist == Dist.CLIENT) new OverclockedWatchesClientForge(EVENT_BUS);
 
         MinecraftForge.EVENT_BUS.addGenericListener(ItemStack.class, this::onAttachCapabilities);
-        MinecraftForge.EVENT_BUS.addListener(this::onKeyInput);
 
         ForgeNetwork.register();
 
@@ -83,13 +82,7 @@ public class OverclockedWatchesForge {
             if (consumer.phase == TickEvent.Phase.END) return;
             MinecraftServer server = consumer.getServer();
             // if (server.getTickCount() % 2 != 0) return;
-            if (CommonConfigValues.use_long_time_delta && TimeManager.shouldOperate()) TimeManager.operate(server.overworld());
-        });
-
-        MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.ClientTickEvent>) consumer -> {
-            if (consumer.phase == TickEvent.Phase.END || Minecraft.getInstance().level == null) return;
-            // if (server.getTickCount() % 2 != 0) return;
-            if (CommonConfigValues.use_long_time_delta && TimeManager.shouldOperate()) TimeManager.operate(Minecraft.getInstance().level);
+            if (CommonConfigValues.use_long_time_delta && TimeManager.SERVER.shouldOperate()) TimeManager.SERVER.operate(server.overworld());
         });
 
         MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) consumer -> {
@@ -107,12 +100,6 @@ public class OverclockedWatchesForge {
     private void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
         if (event.getObject().getItem() instanceof WatchItem item) {
             event.addCapability(CuriosCapability.ID_ITEM, CurioItemCapability.createProvider(new WearableWatchCurio(item, event.getObject())));
-        }
-    }
-
-    private void onKeyInput(InputEvent.Key event) {
-        if(KeyInputHandlerForge.dayNightKey.consumeClick()) {
-            ForgeNetwork.sendToServer(new ForgeDayNightC2SPacket());
         }
     }
 }
