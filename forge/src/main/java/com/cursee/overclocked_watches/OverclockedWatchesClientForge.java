@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -68,9 +69,12 @@ public class OverclockedWatchesClientForge {
 
         MinecraftForge.EVENT_BUS.addListener(this::onKeyInput);
         MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.ClientTickEvent>) consumer -> {
-            if (consumer.phase == TickEvent.Phase.END || Minecraft.getInstance().level == null) return;
-            // if (server.getTickCount() % 2 != 0) return;
-            if (CommonConfigValues.use_long_time_delta && TimeManager.CLIENT.shouldOperate()) TimeManager.CLIENT.operate(Minecraft.getInstance().level);
+            if (consumer.phase == TickEvent.Phase.END) return;
+            ClientLevel level = Minecraft.getInstance().level;
+            if (level == null || level.dimension() != Level.OVERWORLD) return;
+            if (level.getGameTime() % 2 != 0) return;
+            if (CommonConfigValues.use_long_time_delta && TimeManager.CLIENT.shouldOperate()) TimeManager.CLIENT.operate(level);
+            System.out.println("client " + level.getDayTime());
         });
     }
 

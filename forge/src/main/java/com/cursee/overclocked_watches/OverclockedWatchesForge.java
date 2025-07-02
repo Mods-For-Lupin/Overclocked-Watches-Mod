@@ -14,11 +14,14 @@ import com.cursee.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket
 import com.cursee.overclocked_watches.core.registry.RegistryForge;
 import com.cursee.overclocked_watches.platform.Services;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -80,9 +83,10 @@ public class OverclockedWatchesForge {
 
         MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.ServerTickEvent>) consumer -> {
             if (consumer.phase == TickEvent.Phase.END) return;
-            MinecraftServer server = consumer.getServer();
-            // if (server.getTickCount() % 2 != 0) return;
-            if (CommonConfigValues.use_long_time_delta && TimeManager.SERVER.shouldOperate()) TimeManager.SERVER.operate(server.overworld());
+            ServerLevel level = consumer.getServer().overworld();
+            if (level.getGameTime() % 2 != 0) return;
+            if (CommonConfigValues.use_long_time_delta && TimeManager.SERVER.shouldOperate()) TimeManager.SERVER.operate(level);
+            System.out.println("server " + level.getDayTime());
         });
 
         MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) consumer -> {
