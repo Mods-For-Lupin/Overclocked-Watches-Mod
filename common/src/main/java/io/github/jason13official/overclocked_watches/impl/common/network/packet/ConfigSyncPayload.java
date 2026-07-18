@@ -1,31 +1,36 @@
 package io.github.jason13official.overclocked_watches.impl.common.network.packet;
 
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
+import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig.TierConfig;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record ConfigSyncPayload(boolean dayNightCycleAllowed, boolean useLongTimeDelta, long longTimeDelta,
-                                 long goldenWatchDurability, long diamondWatchDurability, long netheriteWatchDurability,
-                                 long goldenWatchCharges, long diamondWatchCharges, long netheriteWatchCharges,
-                                 long goldenWatchCooldownMinutes, long diamondWatchCooldownMinutes, long netheriteWatchCooldownMinutes,
-                                 long goldenTimeAdvancementTicks, long diamondTimeAdvancementTicks, long netheriteTimeAdvancementTicks) {
+                                 long[] durability, long[] charges, long[] cooldownMinutes, long[] timeAdvancementTicks) {
+
+  private static final int TIER_COUNT = WatchTier.values().length;
 
   public static ConfigSyncPayload fromServerConfig() {
+
+    long[] durability = new long[TIER_COUNT];
+    long[] charges = new long[TIER_COUNT];
+    long[] cooldownMinutes = new long[TIER_COUNT];
+    long[] timeAdvancementTicks = new long[TIER_COUNT];
+
+    for (WatchTier tier : WatchTier.values()) {
+      TierConfig tierConfig = ServerModConfig.get(tier);
+      int i = tier.ordinal();
+      durability[i] = tierConfig.durability().get();
+      charges[i] = tierConfig.charges().get();
+      cooldownMinutes[i] = tierConfig.cooldownMinutes().get();
+      timeAdvancementTicks[i] = tierConfig.timeAdvancementTicks().get();
+    }
+
     return new ConfigSyncPayload(
         ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.get(),
         ServerModConfig.USE_LONG_TIME_DELTA.get(),
         ServerModConfig.LONG_TIME_DELTA.get(),
-        ServerModConfig.GOLDEN_WATCH_DURABILITY.get(),
-        ServerModConfig.DIAMOND_WATCH_DURABILITY.get(),
-        ServerModConfig.NETHERITE_WATCH_DURABILITY.get(),
-        ServerModConfig.GOLDEN_WATCH_CHARGES.get(),
-        ServerModConfig.DIAMOND_WATCH_CHARGES.get(),
-        ServerModConfig.NETHERITE_WATCH_CHARGES.get(),
-        ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.get(),
-        ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.get(),
-        ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.get(),
-        ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.get(),
-        ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.get(),
-        ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.get()
+        durability, charges, cooldownMinutes, timeAdvancementTicks
     );
   }
 
@@ -34,55 +39,39 @@ public record ConfigSyncPayload(boolean dayNightCycleAllowed, boolean useLongTim
     boolean dayNightCycleAllowed = data.readBoolean();
     boolean useLongTimeDelta = data.readBoolean();
     long longTimeDelta = data.readLong();
-    long goldenWatchDurability = data.readLong();
-    long diamondWatchDurability = data.readLong();
-    long netheriteWatchDurability = data.readLong();
-    long goldenWatchCharges = data.readLong();
-    long diamondWatchCharges = data.readLong();
-    long netheriteWatchCharges = data.readLong();
-    long goldenWatchCooldownMinutes = data.readLong();
-    long diamondWatchCooldownMinutes = data.readLong();
-    long netheriteWatchCooldownMinutes = data.readLong();
-    long goldenTimeAdvancementTicks = data.readLong();
-    long diamondTimeAdvancementTicks = data.readLong();
-    long netheriteTimeAdvancementTicks = data.readLong();
+    long[] durability = readLongArray(data);
+    long[] charges = readLongArray(data);
+    long[] cooldownMinutes = readLongArray(data);
+    long[] timeAdvancementTicks = readLongArray(data);
 
-    return new ConfigSyncPayload(
-        dayNightCycleAllowed,
-        useLongTimeDelta,
-        longTimeDelta,
-        goldenWatchDurability,
-        diamondWatchDurability,
-        netheriteWatchDurability,
-        goldenWatchCharges,
-        diamondWatchCharges,
-        netheriteWatchCharges,
-        goldenWatchCooldownMinutes,
-        diamondWatchCooldownMinutes,
-        netheriteWatchCooldownMinutes,
-        goldenTimeAdvancementTicks,
-        diamondTimeAdvancementTicks,
-        netheriteTimeAdvancementTicks
-    );
+    return new ConfigSyncPayload(dayNightCycleAllowed, useLongTimeDelta, longTimeDelta, durability, charges, cooldownMinutes, timeAdvancementTicks);
+  }
+
+  private static long[] readLongArray(FriendlyByteBuf data) {
+
+    long[] values = new long[TIER_COUNT];
+    for (int i = 0; i < TIER_COUNT; i++) {
+      values[i] = data.readLong();
+    }
+    return values;
+  }
+
+  private static void writeLongArray(FriendlyByteBuf data, long[] values) {
+
+    for (long value : values) {
+      data.writeLong(value);
+    }
   }
 
   public void write(FriendlyByteBuf data) {
 
-    data.writeBoolean(ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.get());
-    data.writeBoolean(ServerModConfig.USE_LONG_TIME_DELTA.get());
-    data.writeLong(ServerModConfig.LONG_TIME_DELTA.get());
-    data.writeLong(ServerModConfig.GOLDEN_WATCH_DURABILITY.get());
-    data.writeLong(ServerModConfig.DIAMOND_WATCH_DURABILITY.get());
-    data.writeLong(ServerModConfig.NETHERITE_WATCH_DURABILITY.get());
-    data.writeLong(ServerModConfig.GOLDEN_WATCH_CHARGES.get());
-    data.writeLong(ServerModConfig.DIAMOND_WATCH_CHARGES.get());
-    data.writeLong(ServerModConfig.NETHERITE_WATCH_CHARGES.get());
-    data.writeLong(ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.get());
-    data.writeLong(ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.get());
-    data.writeLong(ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.get());
-    data.writeLong(ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.get());
-    data.writeLong(ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.get());
-    data.writeLong(ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.get());
+    data.writeBoolean(dayNightCycleAllowed);
+    data.writeBoolean(useLongTimeDelta);
+    data.writeLong(longTimeDelta);
+    writeLongArray(data, durability);
+    writeLongArray(data, charges);
+    writeLongArray(data, cooldownMinutes);
+    writeLongArray(data, timeAdvancementTicks);
   }
 
   public void applyToConfig() {
@@ -90,17 +79,14 @@ public record ConfigSyncPayload(boolean dayNightCycleAllowed, boolean useLongTim
     ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.set(dayNightCycleAllowed);
     ServerModConfig.USE_LONG_TIME_DELTA.set(useLongTimeDelta);
     ServerModConfig.LONG_TIME_DELTA.set(longTimeDelta);
-    ServerModConfig.GOLDEN_WATCH_DURABILITY.set(goldenWatchDurability);
-    ServerModConfig.DIAMOND_WATCH_DURABILITY.set(diamondWatchDurability);
-    ServerModConfig.NETHERITE_WATCH_DURABILITY.set(netheriteWatchDurability);
-    ServerModConfig.GOLDEN_WATCH_CHARGES.set(goldenWatchCharges);
-    ServerModConfig.DIAMOND_WATCH_CHARGES.set(diamondWatchCharges);
-    ServerModConfig.NETHERITE_WATCH_CHARGES.set(netheriteWatchCharges);
-    ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.set(goldenWatchCooldownMinutes);
-    ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.set(diamondWatchCooldownMinutes);
-    ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.set(netheriteWatchCooldownMinutes);
-    ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.set(goldenTimeAdvancementTicks);
-    ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.set(diamondTimeAdvancementTicks);
-    ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.set(netheriteTimeAdvancementTicks);
+
+    for (WatchTier tier : WatchTier.values()) {
+      TierConfig tierConfig = ServerModConfig.get(tier);
+      int i = tier.ordinal();
+      tierConfig.durability().set(durability[i]);
+      tierConfig.charges().set(charges[i]);
+      tierConfig.cooldownMinutes().set(cooldownMinutes[i]);
+      tierConfig.timeAdvancementTicks().set(timeAdvancementTicks[i]);
+    }
   }
 }

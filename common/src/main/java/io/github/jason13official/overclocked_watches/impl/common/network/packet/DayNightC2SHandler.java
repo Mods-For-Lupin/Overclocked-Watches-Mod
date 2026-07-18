@@ -1,6 +1,7 @@
 package io.github.jason13official.overclocked_watches.impl.common.network.packet;
 
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
@@ -26,9 +27,8 @@ public class DayNightC2SHandler {
       return;
     }
 
-    boolean hasNetheriteWatch = Services.PLATFORM.playerHasNetheriteWatchEquipped(player);
-    boolean hasDiamondWatch = Services.PLATFORM.playerHasDiamondWatchEquipped(player);
-    boolean hasGoldenWatch = Services.PLATFORM.playerHasGoldenWatchEquipped(player);
+    boolean hasNetheriteWatch = Services.PLATFORM.playerHasWatchEquipped(player, WatchTier.NETHERITE);
+    boolean hasDiamondWatch = Services.PLATFORM.playerHasWatchEquipped(player, WatchTier.DIAMOND);
     if (!Services.PLATFORM.hasAnyWatchEquipped(player)) {
       return;
     }
@@ -40,26 +40,26 @@ public class DayNightC2SHandler {
     }
 
     if (hasNetheriteWatch) {
-      ItemStack equippedWatch = Services.PLATFORM.getEquippedNetheriteWatch(player);
+      ItemStack equippedWatch = Services.PLATFORM.getEquippedWatch(player, WatchTier.NETHERITE);
       if (!OverclockedWatchesUtil.consumeCharge(equippedWatch)) {
         return;
       }
-      addTime(server, ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.get());
-      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.get().longValue());
+      addTime(server, WatchTier.NETHERITE.getTimeAdvancementTicks());
+      applyCooldowns(player, 20 * 60 * WatchTier.NETHERITE.getCooldownMinutes());
     } else if (hasDiamondWatch) {
-      ItemStack watch = Services.PLATFORM.getEquippedDiamondWatch(player);
+      ItemStack watch = Services.PLATFORM.getEquippedWatch(player, WatchTier.DIAMOND);
       if (!OverclockedWatchesUtil.consumeCharge(watch)) {
         return;
       }
-      addTime(server, ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.get());
-      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.get().longValue());
+      addTime(server, WatchTier.DIAMOND.getTimeAdvancementTicks());
+      applyCooldowns(player, 20 * 60 * WatchTier.DIAMOND.getCooldownMinutes());
     } else {
-      ItemStack watch = Services.PLATFORM.getEquippedGoldenWatch(player);
+      ItemStack watch = Services.PLATFORM.getEquippedWatch(player, WatchTier.GOLDEN);
       if (!OverclockedWatchesUtil.consumeCharge(watch)) {
         return;
       }
-      addTime(server, ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.get());
-      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.get().longValue());
+      addTime(server, WatchTier.GOLDEN.getTimeAdvancementTicks());
+      applyCooldowns(player, 20 * 60 * WatchTier.GOLDEN.getCooldownMinutes());
     }
 
     player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);

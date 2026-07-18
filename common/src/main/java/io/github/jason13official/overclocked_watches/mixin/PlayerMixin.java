@@ -1,8 +1,8 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.platform.Services;
-import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,20 +44,11 @@ public class PlayerMixin {
       return;
     }
 
-    final AtomicBoolean FOUND_GOLDEN_WATCH = new AtomicBoolean(false);
-    final AtomicBoolean FOUND_DIAMOND_WATCH = new AtomicBoolean(false);
-    final AtomicBoolean FOUND_NETHERITE_WATCH = new AtomicBoolean(false);
-    if (Services.PLATFORM.playerHasGoldenWatchEquipped(player)) {
-      FOUND_GOLDEN_WATCH.set(true);
-    }
-    if (Services.PLATFORM.playerHasDiamondWatchEquipped(player)) {
-      FOUND_DIAMOND_WATCH.set(true);
-    }
-    if (Services.PLATFORM.playerHasNetheriteWatchEquipped(player)) {
-      FOUND_NETHERITE_WATCH.set(true);
-    }
+    final boolean foundGolden = Services.PLATFORM.playerHasWatchEquipped(player, WatchTier.GOLDEN);
+    final boolean foundDiamond = Services.PLATFORM.playerHasWatchEquipped(player, WatchTier.DIAMOND);
+    final boolean foundNetherite = Services.PLATFORM.playerHasWatchEquipped(player, WatchTier.NETHERITE);
 
-    if (!(FOUND_GOLDEN_WATCH.get() || FOUND_DIAMOND_WATCH.get() || FOUND_NETHERITE_WATCH.get())) {
+    if (!(foundGolden || foundDiamond || foundNetherite)) {
       return;
     }
 
@@ -75,40 +66,37 @@ public class PlayerMixin {
         return;
       }
 
-      if (FOUND_NETHERITE_WATCH.get()) {
+      // highest tier wins
+      if (foundNetherite) {
         for (int i = 0; i < 4; i++) {
           unique_$_forceGrowth(crop, blockState, level, blockPos);
         }
-        OverclockedWatchesUtil.addNetheriteGrowthParticles(level, blockPos, 8);
-      } else if (FOUND_DIAMOND_WATCH.get()) {
+        OverclockedWatchesUtil.addGrowthParticles(WatchTier.NETHERITE, level, blockPos, 8);
+      } else if (foundDiamond) {
         if (level.random.nextBoolean()) {
           unique_$_forceGrowth(crop, blockState, level, blockPos);
         }
-        OverclockedWatchesUtil.addDiamondGrowthParticles(level, blockPos, 8);
-      } else if (FOUND_GOLDEN_WATCH.get()) {
+        OverclockedWatchesUtil.addGrowthParticles(WatchTier.DIAMOND, level, blockPos, 8);
+      } else if (foundGolden) {
         if (level.random.nextInt(10) == 1) {
           unique_$_forceGrowth(crop, blockState, level, blockPos);
         }
-        OverclockedWatchesUtil.addGoldenGrowthParticles(level, blockPos, 8);
+        OverclockedWatchesUtil.addGrowthParticles(WatchTier.GOLDEN, level, blockPos, 8);
       }
     });
 
-    if (FOUND_NETHERITE_WATCH.get() && player.getRandom().nextInt(0, 20) == 1) {
-      ItemStack equippedWatch = Services.PLATFORM.getEquippedNetheriteWatch(player);
-      equippedWatch.hurt(1, player.getRandom(), player);
-      if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
-        equippedWatch.shrink(1);
+    // wear applies independently per equipped tier, highest tier first
+    for (WatchTier tier : new WatchTier[]{WatchTier.NETHERITE, WatchTier.DIAMOND, WatchTier.GOLDEN}) {
+      boolean found = switch (tier) {
+        case NETHERITE -> foundNetherite;
+        case DIAMOND -> foundDiamond;
+        case GOLDEN -> foundGolden;
+      };
+      if (!found || player.getRandom().nextInt(0, 20) != 1) {
+        continue;
       }
-    }
-    if (FOUND_DIAMOND_WATCH.get() && player.getRandom().nextInt(0, 20) == 1) {
-      ItemStack equippedWatch = Services.PLATFORM.getEquippedDiamondWatch(player);
-      equippedWatch.hurt(1, player.getRandom(), player);
-      if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
-        equippedWatch.shrink(1);
-      }
-    }
-    if (FOUND_GOLDEN_WATCH.get() && player.getRandom().nextInt(0, 20) == 1) {
-      ItemStack equippedWatch = Services.PLATFORM.getEquippedGoldenWatch(player);
+
+      ItemStack equippedWatch = Services.PLATFORM.getEquippedWatch(player, tier);
       equippedWatch.hurt(1, player.getRandom(), player);
       if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
         equippedWatch.shrink(1);

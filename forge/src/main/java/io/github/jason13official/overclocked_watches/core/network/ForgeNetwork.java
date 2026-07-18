@@ -11,14 +11,6 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 public class ForgeNetwork {
 
-//    private static final String PROTOCOL_VERSION = "1";
-//    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-//            OverclockedWatches.identifier(Constants.MOD_ID),
-//            () -> PROTOCOL_VERSION,
-//            PROTOCOL_VERSION::equals,
-//            PROTOCOL_VERSION::equals
-//    );
-
   private static SimpleChannel INSTANCE;
 
   private static int packetId = 0;
@@ -49,8 +41,6 @@ public class ForgeNetwork {
         .encoder(ForgeConfigSyncS2CPacket::encode)
         .consumerMainThread(ForgeConfigSyncS2CPacket::handle)
         .add();
-
-    // net.registerMessage(id(), ForgeConfigSyncS2CPacket.class, ForgeConfigSyncS2CPacket::encode, ForgeConfigSyncS2CPacket::decode, ForgeConfigSyncS2CPacket::handle);
   }
 
   public static <MSG> void sendToServer(MSG message) {

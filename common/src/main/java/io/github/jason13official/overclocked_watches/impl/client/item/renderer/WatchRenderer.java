@@ -4,8 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
 import io.github.jason13official.overclocked_watches.impl.client.item.model.ArmsModel;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.Services;
+import java.util.Locale;
 import java.util.function.Function;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -44,9 +46,10 @@ public class WatchRenderer implements IWatchRenderer {
   }
 
   public static void registerAll() {
-    Services.PLATFORM.registerWatchRenderer(ModItems.GOLDEN_WATCH, () -> new WatchRenderer("golden_watch", ArmsModel::bakeGoldenWatchTextureOnModel));
-    Services.PLATFORM.registerWatchRenderer(ModItems.DIAMOND_WATCH, () -> new WatchRenderer("diamond_watch", ArmsModel::bakeDiamondWatchTextureOnModel));
-    Services.PLATFORM.registerWatchRenderer(ModItems.NETHERITE_WATCH, () -> new WatchRenderer("netherite_watch", ArmsModel::bakeNetheriteWatchTextureOnModel));
+    for (WatchTier tier : WatchTier.values()) {
+      String name = tier.name().toLowerCase(Locale.ROOT) + "_watch";
+      Services.PLATFORM.registerWatchRenderer(ModItems.getWatch(tier), () -> new WatchRenderer(name, hasSlimArms -> ArmsModel.bakeWatchTextureOnModel(tier, hasSlimArms)));
+    }
   }
 
   @Nullable

@@ -6,6 +6,8 @@ import dev.emi.trinkets.api.TrinketsApi;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.api.common.data.IEntityDataSaver;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.services.IPlatformHelper;
 import java.nio.file.Path;
@@ -19,7 +21,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab.Builder;
@@ -77,11 +81,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
   }
 
   @Override
-  public boolean playerHasNetheriteWatchEquipped(Player player) {
+  public boolean playerHasWatchEquipped(Player player, WatchTier tier) {
 
+    Item watch = ModItems.getWatch(tier);
     final AtomicBoolean foundWatch = new AtomicBoolean(false);
     TrinketsApi.getTrinketComponent(player).ifPresent(trinketComponent -> {
-      if (trinketComponent.isEquipped(itemStack -> itemStack.getItem() == ModItems.NETHERITE_WATCH)) {
+      if (trinketComponent.isEquipped(itemStack -> itemStack.getItem() == watch)) {
         foundWatch.set(true);
       }
     });
@@ -90,57 +95,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
   }
 
   @Override
-  public boolean playerHasDiamondWatchEquipped(Player player) {
+  public ItemStack getEquippedWatch(Player player, WatchTier tier) {
 
-    final AtomicBoolean foundWatch = new AtomicBoolean(false);
-    TrinketsApi.getTrinketComponent(player).ifPresent(trinketComponent -> {
-      if (trinketComponent.isEquipped(itemStack -> itemStack.getItem() == ModItems.DIAMOND_WATCH)) {
-        foundWatch.set(true);
-      }
-    });
-
-    return foundWatch.get();
-  }
-
-  @Override
-  public boolean playerHasGoldenWatchEquipped(Player player) {
-
-    final AtomicBoolean foundWatch = new AtomicBoolean(false);
-    TrinketsApi.getTrinketComponent(player).ifPresent(trinketComponent -> {
-      if (trinketComponent.isEquipped(itemStack -> itemStack.getItem() == ModItems.GOLDEN_WATCH)) {
-        foundWatch.set(true);
-      }
-    });
-
-    return foundWatch.get();
-  }
-
-  @Override
-  public ItemStack getEquippedNetheriteWatch(Player player) {
-
+    Item watch = ModItems.getWatch(tier);
     AtomicReference<ItemStack> itemStackReference = new AtomicReference<ItemStack>(ItemStack.EMPTY);
     TrinketsApi.getTrinketComponent(player)
-        .ifPresent(trinketComponent -> trinketComponent.getEquipped(ModItems.NETHERITE_WATCH).forEach(slotReferenceItemStackTuple -> itemStackReference.set(slotReferenceItemStackTuple.getB())));
-
-    return itemStackReference.get();
-  }
-
-  @Override
-  public ItemStack getEquippedDiamondWatch(Player player) {
-
-    AtomicReference<ItemStack> itemStackReference = new AtomicReference<ItemStack>(ItemStack.EMPTY);
-    TrinketsApi.getTrinketComponent(player)
-        .ifPresent(trinketComponent -> trinketComponent.getEquipped(ModItems.DIAMOND_WATCH).forEach(slotReferenceItemStackTuple -> itemStackReference.set(slotReferenceItemStackTuple.getB())));
-
-    return itemStackReference.get();
-  }
-
-  @Override
-  public ItemStack getEquippedGoldenWatch(Player player) {
-
-    AtomicReference<ItemStack> itemStackReference = new AtomicReference<ItemStack>(ItemStack.EMPTY);
-    TrinketsApi.getTrinketComponent(player)
-        .ifPresent(trinketComponent -> trinketComponent.getEquipped(ModItems.GOLDEN_WATCH).forEach(slotReferenceItemStackTuple -> itemStackReference.set(slotReferenceItemStackTuple.getB())));
+        .ifPresent(trinketComponent -> trinketComponent.getEquipped(watch).forEach(slotReferenceItemStackTuple -> itemStackReference.set(slotReferenceItemStackTuple.getB())));
 
     return itemStackReference.get();
   }
@@ -153,6 +113,11 @@ public class FabricPlatformHelper implements IPlatformHelper {
   @Override
   public ResourceLocation getRLFromItem(Item item) {
     return BuiltInRegistries.ITEM.getKey(item);
+  }
+
+  @Override
+  public CompoundTag getPersistentData(Entity entity) {
+    return ((IEntityDataSaver) entity).overclocked_watches$getPersistentData();
   }
 
   private record WatchTrinketRenderer(IWatchRenderer renderer) implements TrinketRenderer {

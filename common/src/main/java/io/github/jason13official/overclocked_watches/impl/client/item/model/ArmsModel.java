@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.jason13official.overclocked_watches.impl.client.item.RendererLayers;
 import io.github.jason13official.overclocked_watches.impl.client.item.RendererUtil;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import java.util.function.Function;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -23,16 +24,8 @@ public class ArmsModel extends HumanoidModel<LivingEntity> {
     this(part, RenderType::entityCutoutNoCull);
   }
 
-  public static ArmsModel bakeGoldenWatchTextureOnModel(boolean hasSlimArms) {
-    return new ArmsModel(RendererUtil.bakeLayer(RendererLayers.goldenWatch(hasSlimArms)));
-  }
-
-  public static ArmsModel bakeDiamondWatchTextureOnModel(boolean hasSlimArms) {
-    return new ArmsModel(RendererUtil.bakeLayer(RendererLayers.diamondWatch(hasSlimArms)));
-  }
-
-  public static ArmsModel bakeNetheriteWatchTextureOnModel(boolean hasSlimArms) {
-    return new ArmsModel(RendererUtil.bakeLayer(RendererLayers.netheriteWatch(hasSlimArms)));
+  public static ArmsModel bakeWatchTextureOnModel(WatchTier tier, boolean hasSlimArms) {
+    return new ArmsModel(RendererUtil.bakeLayer(RendererLayers.watch(tier, hasSlimArms)));
   }
 
   @Override

@@ -2,6 +2,7 @@ package io.github.jason13official.overclocked_watches.mixin;
 
 import com.mojang.authlib.GameProfile;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
+import io.github.jason13official.overclocked_watches.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,6 +25,6 @@ public abstract class ForgeServerPlayerMixin extends Player {
       at = {@At("HEAD")}
   )
   private void inject$addAdditionalSaveData(CompoundTag tag0, CallbackInfo ci) {
-    OverclockedWatchesUtil.saveCooldowns(this.getPersistentData(), this);
+    OverclockedWatchesUtil.saveCooldowns(Services.PLATFORM.getPersistentData(this), this);
   }
 }

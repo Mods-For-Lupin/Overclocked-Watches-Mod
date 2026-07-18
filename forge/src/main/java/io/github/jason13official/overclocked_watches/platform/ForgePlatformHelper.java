@@ -2,6 +2,7 @@ package io.github.jason13official.overclocked_watches.platform;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.services.IPlatformHelper;
 import java.nio.file.Path;
@@ -12,7 +13,9 @@ import java.util.function.Supplier;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -80,11 +83,12 @@ public class ForgePlatformHelper implements IPlatformHelper {
   }
 
   @Override
-  public boolean playerHasNetheriteWatchEquipped(Player player) {
+  public boolean playerHasWatchEquipped(Player player, WatchTier tier) {
 
+    Item watch = ModItems.getWatch(tier);
     final AtomicBoolean foundWatch = new AtomicBoolean(false);
     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-      if (iCuriosItemHandler.isEquipped(ModItems.NETHERITE_WATCH)) {
+      if (iCuriosItemHandler.isEquipped(watch)) {
         foundWatch.set(true);
       }
     });
@@ -93,55 +97,12 @@ public class ForgePlatformHelper implements IPlatformHelper {
   }
 
   @Override
-  public boolean playerHasDiamondWatchEquipped(Player player) {
+  public ItemStack getEquippedWatch(Player player, WatchTier tier) {
 
-    final AtomicBoolean foundWatch = new AtomicBoolean(false);
-    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-      if (iCuriosItemHandler.isEquipped(ModItems.DIAMOND_WATCH)) {
-        foundWatch.set(true);
-      }
-    });
-
-    return foundWatch.get();
-  }
-
-  @Override
-  public boolean playerHasGoldenWatchEquipped(Player player) {
-
-    final AtomicBoolean foundWatch = new AtomicBoolean(false);
-    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-      if (iCuriosItemHandler.isEquipped(ModItems.GOLDEN_WATCH)) {
-        foundWatch.set(true);
-      }
-    });
-
-    return foundWatch.get();
-  }
-
-  @Override
-  public ItemStack getEquippedNetheriteWatch(Player player) {
-
+    Item watch = ModItems.getWatch(tier);
     AtomicReference<ItemStack> itemStackReference = new AtomicReference<ItemStack>(ItemStack.EMPTY);
     CuriosApi.getCuriosInventory(player)
-        .ifPresent(iCuriosItemHandler -> iCuriosItemHandler.findFirstCurio(ModItems.NETHERITE_WATCH).ifPresent(slotResult -> itemStackReference.set(slotResult.stack())));
-
-    return itemStackReference.get();
-  }
-
-  @Override
-  public ItemStack getEquippedDiamondWatch(Player player) {
-
-    AtomicReference<ItemStack> itemStackReference = new AtomicReference<ItemStack>(ItemStack.EMPTY);
-    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> iCuriosItemHandler.findFirstCurio(ModItems.DIAMOND_WATCH).ifPresent(slotResult -> itemStackReference.set(slotResult.stack())));
-
-    return itemStackReference.get();
-  }
-
-  @Override
-  public ItemStack getEquippedGoldenWatch(Player player) {
-
-    AtomicReference<ItemStack> itemStackReference = new AtomicReference<ItemStack>(ItemStack.EMPTY);
-    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> iCuriosItemHandler.findFirstCurio(ModItems.GOLDEN_WATCH).ifPresent(slotResult -> itemStackReference.set(slotResult.stack())));
+        .ifPresent(iCuriosItemHandler -> iCuriosItemHandler.findFirstCurio(watch).ifPresent(slotResult -> itemStackReference.set(slotResult.stack())));
 
     return itemStackReference.get();
   }
@@ -154,6 +115,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
   @Override
   public ResourceLocation getRLFromItem(Item item) {
     return ForgeRegistries.ITEMS.getKey(item);
+  }
+
+  @Override
+  public CompoundTag getPersistentData(Entity entity) {
+    return entity.getPersistentData();
   }
 
   private record WatchCurioRenderer(IWatchRenderer renderer) implements ICurioRenderer {

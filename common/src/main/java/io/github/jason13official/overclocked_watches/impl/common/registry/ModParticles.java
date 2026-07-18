@@ -1,6 +1,7 @@
 package io.github.jason13official.overclocked_watches.impl.common.registry;
 
 import io.github.jason13official.overclocked_watches.OverclockedWatches;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.impl.common.particle.WatchGrowthParticle;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -31,6 +32,15 @@ public class ModParticles {
     consumer.accept(GOLDEN_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
     consumer.accept(DIAMOND_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
     consumer.accept(NETHERITE_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
+  }
+
+  public static SimpleParticleType getGrowthParticle(WatchTier tier) {
+
+    return switch (tier) {
+      case GOLDEN -> GOLDEN_WATCH_GROWTH;
+      case DIAMOND -> DIAMOND_WATCH_GROWTH;
+      case NETHERITE -> NETHERITE_WATCH_GROWTH;
+    };
   }
 
   public static class SimpleLimitedParticle extends SimpleParticleType {

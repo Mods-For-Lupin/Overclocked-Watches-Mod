@@ -6,6 +6,7 @@ import io.github.jason13official.overclocked_watches.api.common.data.IEntityData
 import io.github.jason13official.overclocked_watches.api.common.data.IItemCooldowns;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.impl.common.network.packet.DayNightC2SHandler;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.item.WatchItem;
@@ -70,23 +71,9 @@ public class OverclockedWatchesUtil {
     loadCooldowns(temp, newPlayer);
   }
 
-  public static void addGoldenGrowthParticles(ServerLevel level, BlockPos blockPos, int particleCount) {
+  public static void addGrowthParticles(WatchTier tier, ServerLevel level, BlockPos blockPos, int particleCount) {
     for (int i = 0; i < particleCount; ++i) {
-      level.sendParticles(ModParticles.GOLDEN_WATCH_GROWTH, ((double) blockPos.getX()) + level.random.nextDouble(), ((double) blockPos.getY()) + 0.5D,
-          ((double) blockPos.getZ()) + level.random.nextDouble(), 1, 0.0D, 0.0D, 0.0D, 0.2D);
-    }
-  }
-
-  public static void addDiamondGrowthParticles(ServerLevel level, BlockPos blockPos, int particleCount) {
-    for (int i = 0; i < particleCount; ++i) {
-      level.sendParticles(ModParticles.DIAMOND_WATCH_GROWTH, ((double) blockPos.getX()) + level.random.nextDouble(), ((double) blockPos.getY()) + 0.5D,
-          ((double) blockPos.getZ()) + level.random.nextDouble(), 1, 0.0D, 0.0D, 0.0D, 0.2D);
-    }
-  }
-
-  public static void addNetheriteGrowthParticles(ServerLevel level, BlockPos blockPos, int particleCount) {
-    for (int i = 0; i < particleCount; ++i) {
-      level.sendParticles(ModParticles.NETHERITE_WATCH_GROWTH, ((double) blockPos.getX()) + level.random.nextDouble(), ((double) blockPos.getY()) + 0.5D,
+      level.sendParticles(ModParticles.getGrowthParticle(tier), ((double) blockPos.getX()) + level.random.nextDouble(), ((double) blockPos.getY()) + 0.5D,
           ((double) blockPos.getZ()) + level.random.nextDouble(), 1, 0.0D, 0.0D, 0.0D, 0.2D);
     }
   }

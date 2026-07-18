@@ -1,10 +1,13 @@
 package io.github.jason13official.overclocked_watches.platform.services;
 
 import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import java.nio.file.Path;
 import java.util.function.Supplier;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -59,27 +62,22 @@ public interface IPlatformHelper {
 
   <T extends Item> void registerWatchRenderer(T item, Supplier<IWatchRenderer> rendererSupplier);
 
-  boolean playerHasNetheriteWatchEquipped(Player player);
-
-  boolean playerHasDiamondWatchEquipped(Player player);
-
-  boolean playerHasGoldenWatchEquipped(Player player);
+  boolean playerHasWatchEquipped(Player player, WatchTier tier);
 
   default boolean hasAnyWatchEquipped(Player player) {
-    boolean hasNetheriteWatch = Services.PLATFORM.playerHasNetheriteWatchEquipped(player);
-    boolean hasDiamondWatch = Services.PLATFORM.playerHasDiamondWatchEquipped(player);
-    boolean hasGoldenWatch = Services.PLATFORM.playerHasGoldenWatchEquipped(player);
-
-    return hasNetheriteWatch || hasDiamondWatch || hasGoldenWatch;
+    for (WatchTier tier : WatchTier.values()) {
+      if (Services.PLATFORM.playerHasWatchEquipped(player, tier)) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  ItemStack getEquippedNetheriteWatch(Player player);
-
-  ItemStack getEquippedDiamondWatch(Player player);
-
-  ItemStack getEquippedGoldenWatch(Player player);
+  ItemStack getEquippedWatch(Player player, WatchTier tier);
 
   Item getItemFromRL(ResourceLocation rl);
 
   ResourceLocation getRLFromItem(Item item);
+
+  CompoundTag getPersistentData(Entity entity);
 }

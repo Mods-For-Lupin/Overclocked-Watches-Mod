@@ -1,6 +1,7 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
 import io.github.jason13official.overclocked_watches.Constants;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -41,36 +42,26 @@ public class MobMixin {
     final AtomicBoolean FOUND_GOLDEN_WATCH = new AtomicBoolean(false);
     final AtomicBoolean FOUND_DIAMOND_WATCH = new AtomicBoolean(false);
     final AtomicBoolean FOUND_NETHERITE_WATCH = new AtomicBoolean(false);
+    // highest tier of watch found so far, wear applies independently per equipped tier
+    final WatchTier[] tiersHighestFirst = {WatchTier.NETHERITE, WatchTier.DIAMOND, WatchTier.GOLDEN};
     nearbyPlayers.forEach(player -> {
-      if (Services.PLATFORM.playerHasGoldenWatchEquipped(player)) {
-        FOUND_GOLDEN_WATCH.set(true);
-      }
-      if (Services.PLATFORM.playerHasDiamondWatchEquipped(player)) {
-        FOUND_DIAMOND_WATCH.set(true);
-      }
-      if (Services.PLATFORM.playerHasNetheriteWatchEquipped(player)) {
-        FOUND_NETHERITE_WATCH.set(true);
-      }
+      for (WatchTier tier : tiersHighestFirst) {
+        if (!Services.PLATFORM.playerHasWatchEquipped(player, tier)) {
+          continue;
+        }
 
-      if (FOUND_NETHERITE_WATCH.get() && player.getRandom().nextInt(0, 20) == 1) {
-        ItemStack equippedWatch = Services.PLATFORM.getEquippedNetheriteWatch(player);
-        equippedWatch.hurt(1, player.getRandom(), (ServerPlayer) player);
-        if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
-          equippedWatch.shrink(1);
+        switch (tier) {
+          case NETHERITE -> FOUND_NETHERITE_WATCH.set(true);
+          case DIAMOND -> FOUND_DIAMOND_WATCH.set(true);
+          case GOLDEN -> FOUND_GOLDEN_WATCH.set(true);
         }
-      }
-      if (FOUND_DIAMOND_WATCH.get() && player.getRandom().nextInt(0, 20) == 1) {
-        ItemStack equippedWatch = Services.PLATFORM.getEquippedDiamondWatch(player);
-        equippedWatch.hurt(1, player.getRandom(), (ServerPlayer) player);
-        if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
-          equippedWatch.shrink(1);
-        }
-      }
-      if (FOUND_GOLDEN_WATCH.get() && player.getRandom().nextInt(0, 20) == 1) {
-        ItemStack equippedWatch = Services.PLATFORM.getEquippedGoldenWatch(player);
-        equippedWatch.hurt(1, player.getRandom(), (ServerPlayer) player);
-        if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
-          equippedWatch.shrink(1);
+
+        if (player.getRandom().nextInt(0, 20) == 1) {
+          ItemStack equippedWatch = Services.PLATFORM.getEquippedWatch(player, tier);
+          equippedWatch.hurt(1, player.getRandom(), (ServerPlayer) player);
+          if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
+            equippedWatch.shrink(1);
+          }
         }
       }
     });
@@ -82,13 +73,13 @@ public class MobMixin {
     // execute the highest tier of watch first
     if (FOUND_NETHERITE_WATCH.get()) {
       mob.ageUp(Constants.AGE_PROGRESSION_NETHERITE);
-      OverclockedWatchesUtil.addNetheriteGrowthParticles(level, mob.blockPosition(), 8);
+      OverclockedWatchesUtil.addGrowthParticles(WatchTier.NETHERITE, level, mob.blockPosition(), 8);
     } else if (FOUND_DIAMOND_WATCH.get()) {
       mob.ageUp(Constants.AGE_PROGRESSION_DIAMOND);
-      OverclockedWatchesUtil.addDiamondGrowthParticles(level, mob.blockPosition(), 8);
+      OverclockedWatchesUtil.addGrowthParticles(WatchTier.DIAMOND, level, mob.blockPosition(), 8);
     } else if (FOUND_GOLDEN_WATCH.get()) {
       mob.ageUp(Constants.AGE_PROGRESSION_GOLD);
-      OverclockedWatchesUtil.addGoldenGrowthParticles(level, mob.blockPosition(), 8);
+      OverclockedWatchesUtil.addGrowthParticles(WatchTier.GOLDEN, level, mob.blockPosition(), 8);
     }
   }
 }

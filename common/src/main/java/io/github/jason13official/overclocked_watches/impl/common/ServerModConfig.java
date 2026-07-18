@@ -1,5 +1,8 @@
 package io.github.jason13official.overclocked_watches.impl.common;
 
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
+import java.util.EnumMap;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -8,34 +11,47 @@ public class ServerModConfig {
   public static boolean dayNightCycleAllowed = true;
   public static boolean useLongTimeDelta = true;
   public static long longTimeDelta = 100L; // 500 ? (also ever 5 ticks ????)
-  public static long goldenWatchDurability = 100L;
-  public static long diamondWatchDurability = 300L;
-  public static long netheriteWatchDurability = 500L;
-  public static long goldenWatchCharges = 1L;
-  public static long diamondWatchCharges = 3L;
-  public static long netheriteWatchCharges = 5L;
-  public static long goldenWatchCooldownMinutes = 20L;
-  public static long diamondWatchCooldownMinutes = 10L;
-  public static long netheriteWatchCooldownMinutes = 5L;
-  public static long goldenTimeAdvancementTicks = 12_000L;
-  public static long diamondTimeAdvancementTicks = 12_000L;
-  public static long netheriteTimeAdvancementTicks = 12_000L;
 
   public static final ConfigGetterSetter<Boolean> DAY_NIGHT_CYCLE_ALLOWED = new ConfigGetterSetter<>("day_night_cycle_allowed", () -> dayNightCycleAllowed, value -> dayNightCycleAllowed = value);
   public static final ConfigGetterSetter<Boolean> USE_LONG_TIME_DELTA = new ConfigGetterSetter<>("use_long_time_delta", () -> useLongTimeDelta, value -> useLongTimeDelta = value);
   public static final ConfigGetterSetter<Long> LONG_TIME_DELTA = new ConfigGetterSetter<>("long_time_delta", () -> longTimeDelta, value -> longTimeDelta = value);
-  public static final ConfigGetterSetter<Long> GOLDEN_WATCH_DURABILITY = new ConfigGetterSetter<>("golden_watch_durability", () -> goldenWatchDurability, value -> goldenWatchDurability = value);
-  public static final ConfigGetterSetter<Long> DIAMOND_WATCH_DURABILITY = new ConfigGetterSetter<>("diamond_watch_durability", () -> diamondWatchDurability, value -> diamondWatchDurability = value);
-  public static final ConfigGetterSetter<Long> NETHERITE_WATCH_DURABILITY = new ConfigGetterSetter<>("netherite_watch_durability", () -> netheriteWatchDurability, value -> netheriteWatchDurability = value);
-  public static final ConfigGetterSetter<Long> GOLDEN_WATCH_CHARGES = new ConfigGetterSetter<>("golden_watch_charges", () -> goldenWatchCharges, value -> goldenWatchCharges = value);
-  public static final ConfigGetterSetter<Long> DIAMOND_WATCH_CHARGES = new ConfigGetterSetter<>("diamond_watch_charges", () -> diamondWatchCharges, value -> diamondWatchCharges = value);
-  public static final ConfigGetterSetter<Long> NETHERITE_WATCH_CHARGES = new ConfigGetterSetter<>("netherite_watch_charges", () -> netheriteWatchCharges, value -> netheriteWatchCharges = value);
-  public static final ConfigGetterSetter<Long> GOLDEN_WATCH_COOLDOWN_MINUTES = new ConfigGetterSetter<>("golden_watch_cooldown_minutes", () -> goldenWatchCooldownMinutes, value -> goldenWatchCooldownMinutes = value);
-  public static final ConfigGetterSetter<Long> DIAMOND_WATCH_COOLDOWN_MINUTES = new ConfigGetterSetter<>("diamond_watch_cooldown_minutes", () -> diamondWatchCooldownMinutes, value -> diamondWatchCooldownMinutes = value);
-  public static final ConfigGetterSetter<Long> NETHERITE_WATCH_COOLDOWN_MINUTES = new ConfigGetterSetter<>("netherite_watch_cooldown_minutes", () -> netheriteWatchCooldownMinutes, value -> netheriteWatchCooldownMinutes = value);
-  public static final ConfigGetterSetter<Long> GOLDEN_TIME_ADVANCEMENT_TICKS = new ConfigGetterSetter<>("golden_time_advancement_ticks", () -> goldenTimeAdvancementTicks, value -> goldenTimeAdvancementTicks = value);
-  public static final ConfigGetterSetter<Long> DIAMOND_TIME_ADVANCEMENT_TICKS = new ConfigGetterSetter<>("diamond_time_advancement_ticks", () -> diamondTimeAdvancementTicks, value -> diamondTimeAdvancementTicks = value);
-  public static final ConfigGetterSetter<Long> NETHERITE_TIME_ADVANCEMENT_TICKS = new ConfigGetterSetter<>("netherite_time_advancement_ticks", () -> netheriteTimeAdvancementTicks, value -> netheriteTimeAdvancementTicks = value);
+
+  // per-tier defaults, indexed by WatchTier.ordinal(): {durability, charges, cooldownMinutes, timeAdvancementTicks}
+  private static final long[][] TIER_DEFAULTS = {
+      {100L, 1L, 20L, 12_000L}, // GOLDEN
+      {300L, 3L, 10L, 12_000L}, // DIAMOND
+      {500L, 5L, 5L, 12_000L},  // NETHERITE
+  };
+
+  private static final EnumMap<WatchTier, TierConfig> TIER_CONFIGS = buildTierConfigs();
+
+  private static EnumMap<WatchTier, TierConfig> buildTierConfigs() {
+
+    EnumMap<WatchTier, TierConfig> map = new EnumMap<>(WatchTier.class);
+    for (WatchTier tier : WatchTier.values()) {
+
+      long[] store = TIER_DEFAULTS[tier.ordinal()].clone();
+      String prefix = tier.name().toLowerCase(Locale.ROOT);
+
+      map.put(tier, new TierConfig(
+          new ConfigGetterSetter<>(prefix + "_watch_durability", () -> store[0], value -> store[0] = value),
+          new ConfigGetterSetter<>(prefix + "_watch_charges", () -> store[1], value -> store[1] = value),
+          new ConfigGetterSetter<>(prefix + "_watch_cooldown_minutes", () -> store[2], value -> store[2] = value),
+          new ConfigGetterSetter<>(prefix + "_time_advancement_ticks", () -> store[3], value -> store[3] = value)
+      ));
+    }
+    return map;
+  }
+
+  public static TierConfig get(WatchTier tier) {
+
+    return TIER_CONFIGS.get(tier);
+  }
+
+  public record TierConfig(ConfigGetterSetter<Long> durability, ConfigGetterSetter<Long> charges,
+                            ConfigGetterSetter<Long> cooldownMinutes, ConfigGetterSetter<Long> timeAdvancementTicks) {
+
+  }
 
   public record ConfigGetterSetter<T>(String key, Supplier<T> getter, Consumer<T> setter) {
 

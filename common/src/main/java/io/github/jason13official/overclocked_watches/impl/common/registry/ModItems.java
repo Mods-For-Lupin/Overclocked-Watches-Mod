@@ -23,4 +23,13 @@ public class ModItems {
     consumer.accept(DIAMOND_WATCH, OverclockedWatches.identifier("diamond_watch"));
     consumer.accept(NETHERITE_WATCH, OverclockedWatches.identifier("netherite_watch"));
   }
+
+  public static Item getWatch(WatchTier tier) {
+
+    return switch (tier) {
+      case GOLDEN -> GOLDEN_WATCH;
+      case DIAMOND -> DIAMOND_WATCH;
+      case NETHERITE -> NETHERITE_WATCH;
+    };
+  }
 }
