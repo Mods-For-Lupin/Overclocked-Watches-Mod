@@ -1,6 +1,6 @@
 package io.github.jason13official.overclocked_watches.client;
 
-import io.github.jason13official.overclocked_watches.client.item.renderer.WatchRenderer;
+import io.github.jason13official.overclocked_watches.impl.client.item.renderer.WatchRenderer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

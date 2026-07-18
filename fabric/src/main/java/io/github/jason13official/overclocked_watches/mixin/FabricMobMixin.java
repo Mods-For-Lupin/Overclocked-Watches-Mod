@@ -1,7 +1,7 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
 import io.github.jason13official.overclocked_watches.Constants;
-import io.github.jason13official.overclocked_watches.core.util.OverclockedWatchesUtil;
+import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

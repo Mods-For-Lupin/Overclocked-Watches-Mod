@@ -1,6 +1,6 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
-import io.github.jason13official.overclocked_watches.core.util.IEntityDataSaver;
+import io.github.jason13official.overclocked_watches.impl.common.util.IEntityDataSaver;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;

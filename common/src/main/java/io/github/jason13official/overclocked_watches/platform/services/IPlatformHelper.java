@@ -1,6 +1,6 @@
 package io.github.jason13official.overclocked_watches.platform.services;
 
-import io.github.jason13official.overclocked_watches.client.item.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.impl.client.item.renderer.IWatchRenderer;
 import java.nio.file.Path;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

@@ -1,4 +1,4 @@
-package io.github.jason13official.overclocked_watches.client.item;
+package io.github.jason13official.overclocked_watches.impl.client.item;
 
 import io.github.jason13official.overclocked_watches.Constants;
 import net.minecraft.client.model.geom.ModelLayerLocation;

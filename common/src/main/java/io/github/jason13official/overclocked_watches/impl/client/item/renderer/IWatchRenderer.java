@@ -1,4 +1,4 @@
-package io.github.jason13official.overclocked_watches.client.item.renderer;
+package io.github.jason13official.overclocked_watches.impl.client.item.renderer;
 
 import io.github.jason13official.overclocked_watches.Constants;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -1,8 +1,8 @@
 package io.github.jason13official.overclocked_watches.core.network.packet;
 
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
-import io.github.jason13official.overclocked_watches.core.registry.ModItems;
-import io.github.jason13official.overclocked_watches.core.util.TimeManager;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.nbt.CompoundTag;

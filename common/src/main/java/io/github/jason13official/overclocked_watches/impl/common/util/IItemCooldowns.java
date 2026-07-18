@@ -1,4 +1,4 @@
-package io.github.jason13official.overclocked_watches.core.util;
+package io.github.jason13official.overclocked_watches.impl.common.util;
 
 import java.util.List;
 

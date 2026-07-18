@@ -1,7 +1,7 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
-import io.github.jason13official.overclocked_watches.core.util.IEntityDataSaver;
-import io.github.jason13official.overclocked_watches.core.util.OverclockedWatchesUtil;
+import io.github.jason13official.overclocked_watches.impl.common.util.IEntityDataSaver;
+import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

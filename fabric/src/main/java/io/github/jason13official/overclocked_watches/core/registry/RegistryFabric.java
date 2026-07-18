@@ -1,5 +1,9 @@
 package io.github.jason13official.overclocked_watches.core.registry;
 
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModBlocks;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModTabs;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

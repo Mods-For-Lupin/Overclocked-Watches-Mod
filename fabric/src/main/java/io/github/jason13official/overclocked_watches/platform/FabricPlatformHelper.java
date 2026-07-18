@@ -1,7 +1,7 @@
 package io.github.jason13official.overclocked_watches.platform;
 
-import io.github.jason13official.overclocked_watches.client.item.renderer.IWatchRenderer;
-import io.github.jason13official.overclocked_watches.core.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.client.item.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.services.IPlatformHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.trinkets.api.SlotReference;

@@ -2,9 +2,9 @@ package io.github.jason13official.overclocked_watches.client.entity.renderer;
 
 import io.github.jason13official.overclocked_watches.Constants;
 import io.github.jason13official.overclocked_watches.OverclockedWatches;
-import io.github.jason13official.overclocked_watches.client.item.model.ArmsModel;
-import io.github.jason13official.overclocked_watches.client.item.renderer.WatchRenderer;
-import io.github.jason13official.overclocked_watches.core.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.client.item.model.ArmsModel;
+import io.github.jason13official.overclocked_watches.impl.client.item.renderer.WatchRenderer;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;

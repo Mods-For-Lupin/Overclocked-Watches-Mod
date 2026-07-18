@@ -1,15 +1,15 @@
 package io.github.jason13official.overclocked_watches;
 
 import io.github.jason13official.overclocked_watches.client.entity.renderer.TrinketRenderers;
-import io.github.jason13official.overclocked_watches.client.item.RendererLayers;
-import io.github.jason13official.overclocked_watches.client.item.RendererUtil;
+import io.github.jason13official.overclocked_watches.impl.client.item.RendererLayers;
+import io.github.jason13official.overclocked_watches.impl.client.item.RendererUtil;
 import io.github.jason13official.overclocked_watches.client.network.packet.FabricConfigSyncClientHandler;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.core.network.FabricNetwork;
-import io.github.jason13official.overclocked_watches.core.registry.ModItems;
-import io.github.jason13official.overclocked_watches.core.registry.ModParticles;
-import io.github.jason13official.overclocked_watches.core.util.TimeManager;
-import io.github.jason13official.overclocked_watches.core.world.particle.WatchGrowthParticle;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
+import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
+import io.github.jason13official.overclocked_watches.impl.common.world.particle.WatchGrowthParticle;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

@@ -4,9 +4,9 @@ import io.github.jason13official.overclocked_watches.core.curio.WearableWatchCur
 import io.github.jason13official.overclocked_watches.core.network.ForgeNetwork;
 import io.github.jason13official.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
 import io.github.jason13official.overclocked_watches.core.registry.RegistryForge;
-import io.github.jason13official.overclocked_watches.core.util.OverclockedWatchesUtil;
-import io.github.jason13official.overclocked_watches.core.util.TimeManager;
-import io.github.jason13official.overclocked_watches.core.world.item.WatchItem;
+import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
+import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
+import io.github.jason13official.overclocked_watches.impl.common.world.item.WatchItem;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.platform.Services;

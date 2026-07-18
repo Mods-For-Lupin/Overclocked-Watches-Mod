@@ -1,4 +1,4 @@
-package io.github.jason13official.overclocked_watches.core.world.particle;
+package io.github.jason13official.overclocked_watches.impl.common.world.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;

@@ -1,10 +1,10 @@
-package io.github.jason13official.overclocked_watches.core.util;
+package io.github.jason13official.overclocked_watches.impl.common.util;
 
 import io.github.jason13official.overclocked_watches.Constants;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
-import io.github.jason13official.overclocked_watches.core.registry.ModItems;
-import io.github.jason13official.overclocked_watches.core.registry.ModParticles;
-import io.github.jason13official.overclocked_watches.core.world.item.WatchItem;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
+import io.github.jason13official.overclocked_watches.impl.common.world.item.WatchItem;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.BlockPos;

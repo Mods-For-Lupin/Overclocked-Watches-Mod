@@ -1,4 +1,4 @@
-package io.github.jason13official.overclocked_watches.core.registry;
+package io.github.jason13official.overclocked_watches.impl.common.registry;
 
 import io.github.jason13official.overclocked_watches.OverclockedWatches;
 import net.minecraft.core.particles.ParticleType;

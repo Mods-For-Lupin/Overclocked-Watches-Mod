@@ -1,7 +1,7 @@
-package io.github.jason13official.overclocked_watches.core.world.item;
+package io.github.jason13official.overclocked_watches.impl.common.world.item;
 
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
-import io.github.jason13official.overclocked_watches.core.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

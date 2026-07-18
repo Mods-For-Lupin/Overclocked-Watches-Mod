@@ -1,4 +1,4 @@
-package io.github.jason13official.overclocked_watches.client.item;
+package io.github.jason13official.overclocked_watches.impl.client.item;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;

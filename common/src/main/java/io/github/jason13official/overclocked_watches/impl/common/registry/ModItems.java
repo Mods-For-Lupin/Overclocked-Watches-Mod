@@ -1,7 +1,7 @@
-package io.github.jason13official.overclocked_watches.core.registry;
+package io.github.jason13official.overclocked_watches.impl.common.registry;
 
 import io.github.jason13official.overclocked_watches.OverclockedWatches;
-import io.github.jason13official.overclocked_watches.core.world.item.WatchItem;
+import io.github.jason13official.overclocked_watches.impl.common.world.item.WatchItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 

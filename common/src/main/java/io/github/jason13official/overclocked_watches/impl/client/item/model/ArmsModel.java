@@ -1,7 +1,7 @@
-package io.github.jason13official.overclocked_watches.client.item.model;
+package io.github.jason13official.overclocked_watches.impl.client.item.model;
 
-import io.github.jason13official.overclocked_watches.client.item.RendererLayers;
-import io.github.jason13official.overclocked_watches.client.item.RendererUtil;
+import io.github.jason13official.overclocked_watches.impl.client.item.RendererLayers;
+import io.github.jason13official.overclocked_watches.impl.client.item.RendererUtil;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
