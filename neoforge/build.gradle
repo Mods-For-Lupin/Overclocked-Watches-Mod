@@ -34,9 +34,11 @@ neoForge {
             sourceSet sourceSets.main
         }
     }
-    dependencies {
-        implementation "curse.maven:monolib-968432:6123990"
-    }
+}
+
+
+dependencies {
+    // implementation "curse.maven:monolib-968432:6123990"
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }

@@ -16,10 +16,10 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.cursee.examplemod.ExampleModFabric"
+          "io.github.jason13official.overclocked_watches.OverclockedWatchesFabric"
         ],
         "client": [
-            "com.cursee.examplemod.ExampleModClientFabric"
+          "io.github.jason13official.overclocked_watches.OverclockedWatchesClientFabric"
         ]
     },
     "mixins": [
@@ -30,8 +30,7 @@
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
         "minecraft": "${minecraft_version}",
-        "java": ">=${java_version}",
-        "monolib": ">=2.0.0"
+        "java": ">=${java_version}"
     },
     "suggests": {
         "another-mod": "*"
