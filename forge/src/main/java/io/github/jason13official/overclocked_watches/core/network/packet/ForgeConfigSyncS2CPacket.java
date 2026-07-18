@@ -1,6 +1,7 @@
 package io.github.jason13official.overclocked_watches.core.network.packet;
 
 import io.github.jason13official.overclocked_watches.client.network.packet.ForgeConfigSyncClientHandler;
+import io.github.jason13official.overclocked_watches.impl.common.network.packet.ConfigSyncPayload;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;

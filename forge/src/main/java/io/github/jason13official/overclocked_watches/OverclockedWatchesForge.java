@@ -2,7 +2,7 @@ package io.github.jason13official.overclocked_watches;
 
 import io.github.jason13official.overclocked_watches.core.curio.WearableWatchCurio;
 import io.github.jason13official.overclocked_watches.core.network.ForgeNetwork;
-import io.github.jason13official.overclocked_watches.core.network.packet.ConfigSyncPayload;
+import io.github.jason13official.overclocked_watches.impl.common.network.packet.ConfigSyncPayload;
 import io.github.jason13official.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;

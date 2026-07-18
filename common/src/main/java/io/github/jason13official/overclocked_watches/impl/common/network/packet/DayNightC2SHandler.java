@@ -1,4 +1,4 @@
-package io.github.jason13official.overclocked_watches.core.network.packet;
+package io.github.jason13official.overclocked_watches.impl.common.network.packet;
 
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
