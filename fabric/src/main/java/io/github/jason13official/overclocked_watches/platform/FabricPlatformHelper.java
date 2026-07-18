@@ -10,6 +10,7 @@ import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 import java.nio.file.Path;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab.Builder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -50,7 +52,13 @@ public class FabricPlatformHelper implements IPlatformHelper {
         return FabricLoader.getInstance().getGameDir();
     }
 
-    @Override
+  @Override
+  public Builder tabBuilder() {
+
+    return FabricItemGroup.builder();
+  }
+
+  @Override
     public boolean isClientSide() {
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     }

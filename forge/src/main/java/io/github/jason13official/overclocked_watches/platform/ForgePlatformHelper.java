@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.Builder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
@@ -53,7 +55,13 @@ public class ForgePlatformHelper implements IPlatformHelper {
         return FMLPaths.GAMEDIR.get();
     }
 
-    @Override
+  @Override
+  public Builder tabBuilder() {
+
+      return CreativeModeTab.builder();
+  }
+
+  @Override
     public boolean isClientSide() {
         return FMLLoader.getDist().isClient();
     }
