@@ -9,6 +9,7 @@ import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig
 import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -16,7 +17,7 @@ import java.util.Locale;
 
 public class ModConfigIO {
 
-  // TODO translate old config file to new format (keys were in camelCaseLikeThis, compared to current snake_case_like_this)
+  @Deprecated(forRemoval = true)
   private static final String OLD_CONFIG_FILE = Constants.MOD_ID + "-common.toml";
 
   public static void load(Path configDir) {
@@ -28,10 +29,65 @@ public class ModConfigIO {
     }
 
     Config.setInsertionOrderPreserved(true);
+    migrateOldConfig(configDir);
     loadServerConfig(configDir, Constants.MOD_ID + "-server.toml");
     if (Services.PLATFORM.isClientSide()) {
       loadClientConfig(configDir, Constants.MOD_ID + "-client.toml");
     }
+  }
+
+  // key rename between the old single-file config and the current split server/client config
+  @Deprecated(forRemoval = true)
+  private static final String OLD_DAY_NIGHT_CYCLE_ALLOWED_KEY = "day_night_cycling_allowed";
+
+  /// migration of the old single config file into the current server/client config files,
+  /// before loadServerConfig()/loadClientConfig() write the new files.
+  @Deprecated(forRemoval = true)
+  private static void migrateOldConfig(Path configDir) {
+
+    Path oldConfigFilepath = configDir.resolve(OLD_CONFIG_FILE);
+    if (!Files.exists(oldConfigFilepath)) {
+      return;
+    }
+
+    File oldConfigFile = new File(oldConfigFilepath.toUri());
+    try (CommentedFileConfig oldConfig = CommentedFileConfig.builder(oldConfigFile).build()) {
+
+      oldConfig.load();
+
+      if (oldConfig.contains(OLD_DAY_NIGHT_CYCLE_ALLOWED_KEY)) {
+        ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.set(Boolean.parseBoolean(String.valueOf(oldConfig.get(OLD_DAY_NIGHT_CYCLE_ALLOWED_KEY))));
+      }
+
+      for (WatchTier tier : WatchTier.values()) {
+        TierConfig tierConfig = ServerModConfig.get(tier);
+        migrateLong(oldConfig, tierConfig.durability());
+        migrateLong(oldConfig, tierConfig.charges());
+        migrateLong(oldConfig, tierConfig.cooldownMinutes());
+        migrateLong(oldConfig, tierConfig.timeAdvancementTicks());
+      }
+
+      migrateLong(oldConfig, ClientModConfig.DEFAULT_DAY_NIGHT_KEY);
+
+      Constants.LOG.info("Migrated old config file {} into the current config format.", OLD_CONFIG_FILE);
+    } catch (Exception e) {
+      Constants.LOG.error("failed to migrate old config file", e);
+    }
+
+    try {
+      Files.move(oldConfigFilepath, configDir.resolve(OLD_CONFIG_FILE + ".MIGRATED"), StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      Constants.LOG.error("failed to archive old config file after migration", e);
+    }
+  }
+
+  @Deprecated(forRemoval = true)
+  private static void migrateLong(CommentedFileConfig oldConfig, ConfigGetterSetter<Long> setting) {
+
+    if (!oldConfig.contains(setting.key())) {
+      return;
+    }
+    setting.set(Long.parseLong(String.valueOf(oldConfig.get(setting.key())).trim()));
   }
 
   private static void loadServerConfig(Path configDir, String filename) {
