@@ -2,19 +2,27 @@ package io.github.jason13official.overclocked_watches;
 
 import io.github.jason13official.overclocked_watches.core.network.FabricNetwork;
 import io.github.jason13official.overclocked_watches.core.network.packet.FabricConfigSyncS2CPacket;
-import io.github.jason13official.overclocked_watches.core.registry.RegistryFabric;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModBlocks;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModTabs;
 import io.github.jason13official.overclocked_watches.impl.common.util.IEntityDataSaver;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.platform.Services;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,12 +33,14 @@ public class OverclockedWatchesFabric implements ModInitializer {
 
   @Override
   public void onInitialize() {
+
     OverclockedWatches.init();
 
-    // handled in init
-    // FabricCommonConfigHandler.onLoad();
+    bind(BuiltInRegistries.BLOCK, ModBlocks::register);
+    bind(BuiltInRegistries.ITEM, ModItems::register);
+    bind(BuiltInRegistries.CREATIVE_MODE_TAB, ModTabs::register);
+    bind(BuiltInRegistries.PARTICLE_TYPE, ModParticles::register);
 
-    RegistryFabric.register();
     FabricNetwork.Packets.registerPacketIDsAndReceivers();
 
     ServerEntityEvents.ENTITY_LOAD.register(FabricConfigSyncS2CPacket::registerS2CPacketSender);
@@ -69,6 +79,11 @@ public class OverclockedWatchesFabric implements ModInitializer {
     });
 
     ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ResourceReloadListener());
+  }
+
+  public <T> void bind(Registry<T> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
+
+    source.accept((t, rl) -> Registry.register(registry, rl, t));
   }
 
   public static class ResourceReloadListener implements SimpleSynchronousResourceReloadListener {
