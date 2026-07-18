@@ -2,10 +2,10 @@ package io.github.jason13official.overclocked_watches.impl.common.network.packet
 
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -22,14 +22,14 @@ public class DayNightC2SHandler {
 
   public static void handle(MinecraftServer server, ServerPlayer player) {
 
-    if (!ServerModConfig.dayNightCycleAllowed) {
+    if (!ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.get()) {
       return;
     }
 
     boolean hasNetheriteWatch = Services.PLATFORM.playerHasNetheriteWatchEquipped(player);
     boolean hasDiamondWatch = Services.PLATFORM.playerHasDiamondWatchEquipped(player);
     boolean hasGoldenWatch = Services.PLATFORM.playerHasGoldenWatchEquipped(player);
-    if (!(hasNetheriteWatch || hasDiamondWatch || hasGoldenWatch)) {
+    if (!Services.PLATFORM.hasAnyWatchEquipped(player)) {
       return;
     }
 
@@ -40,43 +40,31 @@ public class DayNightC2SHandler {
     }
 
     if (hasNetheriteWatch) {
-      ItemStack watch = Services.PLATFORM.getEquippedNetheriteWatch(player);
-      if (!consumeCharge(watch)) {
+      ItemStack equippedWatch = Services.PLATFORM.getEquippedNetheriteWatch(player);
+      if (!OverclockedWatchesUtil.consumeCharge(equippedWatch)) {
         return;
       }
-      addTime(server, ServerModConfig.netheriteTimeAdvancementTicks);
-      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.netheriteWatchCooldownMinutes);
+      addTime(server, ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.get());
+      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.get().longValue());
     } else if (hasDiamondWatch) {
       ItemStack watch = Services.PLATFORM.getEquippedDiamondWatch(player);
-      if (!consumeCharge(watch)) {
+      if (!OverclockedWatchesUtil.consumeCharge(watch)) {
         return;
       }
-      addTime(server, ServerModConfig.diamondTimeAdvancementTicks);
-      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.diamondWatchCooldownMinutes);
+      addTime(server, ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.get());
+      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.get().longValue());
     } else {
       ItemStack watch = Services.PLATFORM.getEquippedGoldenWatch(player);
-      if (!consumeCharge(watch)) {
+      if (!OverclockedWatchesUtil.consumeCharge(watch)) {
         return;
       }
-      addTime(server, ServerModConfig.goldenTimeAdvancementTicks);
-      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.goldenWatchCooldownMinutes);
+      addTime(server, ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.get());
+      applyCooldowns(player, 20 * 60 * (int) ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.get().longValue());
     }
 
     player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
     player.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
     player.sendSystemMessage(Component.translatable("magic.overclocked_watches.charge_consumed"));
-  }
-
-  private static boolean consumeCharge(ItemStack watch) {
-    CompoundTag data = watch.getOrCreateTag();
-    if (data.getInt(CHARGES) == 0) {
-      return false;
-    }
-    int newCharges = data.getInt(CHARGES) - 1;
-    data.remove(CHARGES);
-    data.putInt(CHARGES, newCharges);
-    watch.save(data);
-    return true;
   }
 
   public static void applyCooldowns(Player player, int lengthInTicks) {
@@ -87,12 +75,12 @@ public class DayNightC2SHandler {
 
   public static void addTime(MinecraftServer pSource, long pAmount) {
     for (ServerLevel level : pSource.getAllLevels()) {
-      if (!ServerModConfig.useLongTimeDelta) {
+      if (!ServerModConfig.USE_LONG_TIME_DELTA.get()) {
         level.setDayTime(level.getDayTime() + pAmount);
       }
     }
 
-    if (ServerModConfig.useLongTimeDelta) {
+    if (ServerModConfig.USE_LONG_TIME_DELTA.get()) {
       TimeManager.SERVER.addToRemainingTime((int) pAmount);
     }
   }

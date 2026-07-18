@@ -21,23 +21,23 @@ public class TimeManager {
 
   public void decrementRemainingTime() {
     if (shouldOperate()) {
-      remainingTime -= Math.toIntExact(ServerModConfig.longTimeDelta);
+      remainingTime -= Math.toIntExact(ServerModConfig.LONG_TIME_DELTA.get());
     }
   }
 
   public boolean shouldOperate() {
-    return remainingTime >= ServerModConfig.longTimeDelta;
+    return remainingTime >= ServerModConfig.LONG_TIME_DELTA.get();
   }
 
   public void operate(ServerLevel level) {
     // System.out.println("operating on server");
-    level.setDayTime((level.getDayTime() + ServerModConfig.longTimeDelta) % 24_000L);
+    level.setDayTime((level.getDayTime() + ServerModConfig.LONG_TIME_DELTA.get()) % 24_000L);
     decrementRemainingTime();
   }
 
   public void operate(ClientLevel level) {
     // System.out.println("operating on client");
-    level.setDayTime((level.getDayTime() + ServerModConfig.longTimeDelta) % 24_000L);
+    level.setDayTime((level.getDayTime() + ServerModConfig.LONG_TIME_DELTA.get()) % 24_000L);
     decrementRemainingTime();
   }
 }

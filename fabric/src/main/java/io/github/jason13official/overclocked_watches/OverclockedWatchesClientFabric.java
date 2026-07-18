@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import io.github.jason13official.overclocked_watches.client.entity.renderer.TrinketRenderers;
 import io.github.jason13official.overclocked_watches.client.network.packet.FabricConfigSyncClientHandler;
 import io.github.jason13official.overclocked_watches.core.network.FabricNetwork;
+import io.github.jason13official.overclocked_watches.impl.client.ClientModConfig;
 import io.github.jason13official.overclocked_watches.impl.client.DayNightKeyPressHandler;
 import io.github.jason13official.overclocked_watches.impl.client.item.RendererLayers;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
@@ -41,7 +42,7 @@ public class OverclockedWatchesClientFabric implements ClientModInitializer {
     dayNightKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
         Constants.KEY_DAY_NIGHT,
         InputConstants.Type.KEYSYM,
-        Math.toIntExact(ServerModConfig.defaultDayNightKey),
+        Math.toIntExact(ClientModConfig.DEFAULT_DAY_NIGHT_KEY.get()),
         Constants.KEY_CATEGORY_DAY_NIGHT));
 
     ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -61,7 +62,7 @@ public class OverclockedWatchesClientFabric implements ClientModInitializer {
     });
 
     ClientTickEvents.START_WORLD_TICK.register(clientLevel -> {
-      if (ServerModConfig.useLongTimeDelta && TimeManager.CLIENT.shouldOperate()) {
+      if (ServerModConfig.USE_LONG_TIME_DELTA.get() && TimeManager.CLIENT.shouldOperate()) {
         TimeManager.CLIENT.operate(clientLevel);
       }
     });

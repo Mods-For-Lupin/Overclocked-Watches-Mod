@@ -1,7 +1,9 @@
 package io.github.jason13official.overclocked_watches.impl.common.item;
 
+import io.github.jason13official.overclocked_watches.OverclockedWatches;
 import io.github.jason13official.overclocked_watches.api.common.data.WatchItemData;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
+import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -87,6 +89,7 @@ public class WatchItem extends Item {
     // validatedStackData.remove(CHARGES_TAG); // shouldn't need this, putting should overwrite current value in backing map
     validatedStackData.putInt(CHARGES_TAG, newChargeCount);
     itemInHand.save(validatedStackData);
+    OverclockedWatchesUtil.consumeCharge(itemInHand);
     // we have consumed a charge
 
     applyCooldowns(serverPlayer, 20 * 60 * this.getTier().getCooldownMinutes());

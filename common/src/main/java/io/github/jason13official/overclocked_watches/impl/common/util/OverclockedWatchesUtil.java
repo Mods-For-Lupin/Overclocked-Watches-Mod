@@ -5,6 +5,7 @@ import io.github.jason13official.overclocked_watches.api.common.data.CoolDownRec
 import io.github.jason13official.overclocked_watches.api.common.data.IEntityDataSaver;
 import io.github.jason13official.overclocked_watches.api.common.data.IItemCooldowns;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
+import io.github.jason13official.overclocked_watches.impl.common.network.packet.DayNightC2SHandler;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.item.WatchItem;
@@ -24,12 +25,14 @@ import net.minecraft.world.item.ItemStack;
 
 public class OverclockedWatchesUtil {
 
+  public static final String PERSISTENT_DATA_TAG = "OverclockedWatches";
+
   public static void loadCooldowns(CompoundTag data, Player player) {
     if (Services.PLATFORM.getPlatformName().equalsIgnoreCase("fabric")) {
       data = ((IEntityDataSaver) player).overclocked_watches$getPersistentData();
     }
-    if (data.contains("ocw.watch_data")) {
-      ListTag cooldowns = data.getList("ocw.watch_data", Tag.TAG_COMPOUND);
+    if (data.contains(PERSISTENT_DATA_TAG)) {
+      ListTag cooldowns = data.getList(PERSISTENT_DATA_TAG, Tag.TAG_COMPOUND);
       cooldowns.forEach((tag) -> {
         if (tag instanceof CompoundTag compoundTag) {
           try {
@@ -58,7 +61,7 @@ public class OverclockedWatchesUtil {
       cooldown.putInt("total", r.total());
       cooldowns.add(cooldown);
     });
-    tag.put("ocw.watch_data", cooldowns);
+    tag.put(PERSISTENT_DATA_TAG, cooldowns);
   }
 
   public static void copyCooldowns(Player oldPlayer, Player newPlayer) {
@@ -88,59 +91,14 @@ public class OverclockedWatchesUtil {
     }
   }
 
-  // public static final String TAG_CHARGES = "charges";
-
-  public static boolean handleNetheriteWatchTag(ItemStack itemStack) {
-
-    CompoundTag baseTag = itemStack.getOrCreateTag();
-    if (!baseTag.contains(WatchItem.CHARGES_TAG)) {
-      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf((int) ServerModConfig.netheriteWatchCharges));
+  public static boolean consumeCharge(ItemStack itemInHand) {
+    CompoundTag data = itemInHand.getOrCreateTag();
+    if (data.getInt(DayNightC2SHandler.CHARGES) == 0) {
+      return false;
     }
-
-    int currentCharges = baseTag.getInt(WatchItem.CHARGES_TAG);
-
-    if (currentCharges > 0) {
-      currentCharges -= 1;
-      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf(currentCharges));
-      return true;
-    }
-
-    return false;
-  }
-
-  public static boolean handleDiamondWatchTag(ItemStack itemStack) {
-
-    CompoundTag baseTag = itemStack.getOrCreateTag();
-    if (!baseTag.contains(WatchItem.CHARGES_TAG)) {
-      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf((int) ServerModConfig.diamondWatchCharges));
-    }
-
-    int currentCharges = baseTag.getInt(WatchItem.CHARGES_TAG);
-
-    if (currentCharges > 0) {
-      currentCharges -= 1;
-      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf(currentCharges));
-      return true;
-    }
-
-    return false;
-  }
-
-  public static boolean handleGoldenWatchTag(ItemStack itemStack) {
-
-    CompoundTag baseTag = itemStack.getOrCreateTag();
-    if (!baseTag.contains(WatchItem.CHARGES_TAG)) {
-      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf((int) ServerModConfig.goldenWatchCharges));
-    }
-
-    int currentCharges = baseTag.getInt(WatchItem.CHARGES_TAG);
-
-    if (currentCharges > 0) {
-      currentCharges -= 1;
-      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf(currentCharges));
-      return true;
-    }
-
-    return false;
+    int newCharges = data.getInt(DayNightC2SHandler.CHARGES) - 1;
+    data.putInt(DayNightC2SHandler.CHARGES, newCharges);
+    itemInHand.save(data);
+    return true;
   }
 }

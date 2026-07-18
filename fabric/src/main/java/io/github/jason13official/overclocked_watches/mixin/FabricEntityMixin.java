@@ -1,6 +1,7 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
 import io.github.jason13official.overclocked_watches.api.common.data.IEntityDataSaver;
+import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -28,14 +29,14 @@ public abstract class FabricEntityMixin implements IEntityDataSaver {
   @Inject(method = "saveWithoutId", at = @At("HEAD"))
   protected void injectWriteMethod(CompoundTag nbt, CallbackInfoReturnable info) {
     if (persistentData != null) {
-      nbt.put("ocw.watch_data", persistentData);
+      nbt.put(OverclockedWatchesUtil.PERSISTENT_DATA_TAG, persistentData);
     }
   }
 
   @Inject(method = "load", at = @At("HEAD"))
   protected void injectReadMethod(CompoundTag nbt, CallbackInfo info) {
-    if (nbt.contains("ocw.watch_data", Tag.TAG_COMPOUND)) {
-      persistentData = nbt.getCompound("ocw.watch_data");
+    if (nbt.contains(OverclockedWatchesUtil.PERSISTENT_DATA_TAG, Tag.TAG_COMPOUND)) {
+      persistentData = nbt.getCompound(OverclockedWatchesUtil.PERSISTENT_DATA_TAG);
     }
   }
 }

@@ -55,7 +55,7 @@ public class OverclockedWatchesClientForge {
       if (level == null || level.dimension() != Level.OVERWORLD) {
         return;
       }
-      if (ServerModConfig.useLongTimeDelta && TimeManager.CLIENT.shouldOperate()) {
+      if (ServerModConfig.USE_LONG_TIME_DELTA.get() && TimeManager.CLIENT.shouldOperate()) {
         TimeManager.CLIENT.operate(level);
       }
     });

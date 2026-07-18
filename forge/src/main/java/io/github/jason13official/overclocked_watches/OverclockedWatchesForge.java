@@ -72,7 +72,7 @@ public class OverclockedWatchesForge {
         return;
       }
       ServerLevel level = consumer.getServer().overworld();
-      if (ServerModConfig.useLongTimeDelta && TimeManager.SERVER.shouldOperate()) {
+      if (ServerModConfig.USE_LONG_TIME_DELTA.get() && TimeManager.SERVER.shouldOperate()) {
         TimeManager.SERVER.operate(level);
       }
     });

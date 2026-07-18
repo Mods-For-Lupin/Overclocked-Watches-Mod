@@ -1,6 +1,7 @@
 package io.github.jason13official.overclocked_watches.platform.services;
 
 import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.platform.Services;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
@@ -63,6 +64,14 @@ public interface IPlatformHelper {
   boolean playerHasDiamondWatchEquipped(Player player);
 
   boolean playerHasGoldenWatchEquipped(Player player);
+
+  default boolean hasAnyWatchEquipped(Player player) {
+    boolean hasNetheriteWatch = Services.PLATFORM.playerHasNetheriteWatchEquipped(player);
+    boolean hasDiamondWatch = Services.PLATFORM.playerHasDiamondWatchEquipped(player);
+    boolean hasGoldenWatch = Services.PLATFORM.playerHasGoldenWatchEquipped(player);
+
+    return hasNetheriteWatch || hasDiamondWatch || hasGoldenWatch;
+  }
 
   ItemStack getEquippedNetheriteWatch(Player player);
 

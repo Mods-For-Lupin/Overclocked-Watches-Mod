@@ -1,6 +1,7 @@
 package io.github.jason13official.overclocked_watches.impl.client;
 
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchItem;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -14,23 +15,22 @@ public class DayNightKeyPressHandler {
 
     long pAmount = getTimeAdvanceAmount(player.getMainHandItem().getItem());
 
-    if (!ServerModConfig.useLongTimeDelta) {
+    if (!ServerModConfig.USE_LONG_TIME_DELTA.get()) {
       level.setDayTime(level.getDayTime() + pAmount);
     } else {
       TimeManager.CLIENT.addToRemainingTime((int) pAmount);
     }
 
-    player.playSound(SoundEvents.BELL_BLOCK, 1, 1);
-    player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
+    player.playSound(SoundEvents.BELL_BLOCK, 1.0f, 1.0f);
+    player.playSound(SoundEvents.BELL_RESONATE, 1.0f, 1.0f);
   }
 
   private static long getTimeAdvanceAmount(Item mainHandItem) {
-    if (mainHandItem == ModItems.NETHERITE_WATCH) {
-      return ServerModConfig.netheriteTimeAdvancementTicks;
+
+    if (mainHandItem instanceof WatchItem watchItem) {
+      return watchItem.getTier().getTimeAdvancementTicks();
     }
-    if (mainHandItem == ModItems.DIAMOND_WATCH) {
-      return ServerModConfig.diamondTimeAdvancementTicks;
-    }
-    return ServerModConfig.goldenTimeAdvancementTicks;
+
+    return 0L;
   }
 }
