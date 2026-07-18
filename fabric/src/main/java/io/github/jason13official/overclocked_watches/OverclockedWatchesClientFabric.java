@@ -4,13 +4,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import io.github.jason13official.overclocked_watches.client.entity.renderer.TrinketRenderers;
 import io.github.jason13official.overclocked_watches.client.network.packet.FabricConfigSyncClientHandler;
 import io.github.jason13official.overclocked_watches.core.network.FabricNetwork;
+import io.github.jason13official.overclocked_watches.impl.client.DayNightKeyPressHandler;
 import io.github.jason13official.overclocked_watches.impl.client.item.RendererLayers;
-import io.github.jason13official.overclocked_watches.impl.client.item.RendererUtil;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
-import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
-import io.github.jason13official.overclocked_watches.impl.common.world.particle.WatchGrowthParticle;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -23,23 +21,10 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.Item;
 
 public class OverclockedWatchesClientFabric implements ClientModInitializer {
 
   public static KeyMapping dayNightKey;
-
-  public static void registerModelLayers() {
-    EntityModelLayerRegistry.registerModelLayer(RendererLayers.GOLDEN_WATCH_WIDE, () -> RendererLayers.layer(() -> RendererUtil.createWatchModel(false), 32, 32).get());
-    EntityModelLayerRegistry.registerModelLayer(RendererLayers.GOLDEN_WATCH_SLIM, () -> RendererLayers.layer(() -> RendererUtil.createWatchModel(true), 32, 32).get());
-
-    EntityModelLayerRegistry.registerModelLayer(RendererLayers.DIAMOND_WATCH_WIDE, () -> RendererLayers.layer(() -> RendererUtil.createWatchModel(false), 32, 32).get());
-    EntityModelLayerRegistry.registerModelLayer(RendererLayers.DIAMOND_WATCH_SLIM, () -> RendererLayers.layer(() -> RendererUtil.createWatchModel(true), 32, 32).get());
-
-    EntityModelLayerRegistry.registerModelLayer(RendererLayers.NETHERITE_WATCH_WIDE, () -> RendererLayers.layer(() -> RendererUtil.createWatchModel(false), 32, 32).get());
-    EntityModelLayerRegistry.registerModelLayer(RendererLayers.NETHERITE_WATCH_SLIM, () -> RendererLayers.layer(() -> RendererUtil.createWatchModel(true), 32, 32).get());
-  }
 
   @Override
   public void onInitializeClient() {
@@ -47,11 +32,9 @@ public class OverclockedWatchesClientFabric implements ClientModInitializer {
 
     ClientPlayNetworking.registerGlobalReceiver(FabricNetwork.Packets.CONFIG_SYNC_S2C, FabricConfigSyncClientHandler::registerS2CPacketHandler);
 
-    OverclockedWatchesClientFabric.registerModelLayers(); // here
+    RendererLayers.register((layerLocation, supplier) -> EntityModelLayerRegistry.registerModelLayer(layerLocation, supplier::get));
 
-    ParticleFactoryRegistry.getInstance().register(ModParticles.GOLDEN_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
-    ParticleFactoryRegistry.getInstance().register(ModParticles.DIAMOND_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
-    ParticleFactoryRegistry.getInstance().register(ModParticles.NETHERITE_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
+    ModParticles.registerProviders((particleType, provider) -> ParticleFactoryRegistry.getInstance().register(particleType, provider::apply));
 
     ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new TrinketRenderers());
 
@@ -71,28 +54,8 @@ public class OverclockedWatchesClientFabric implements ClientModInitializer {
           return;
         }
 
-        long pAmount = ServerModConfig.goldenTimeAdvancementTicks;
+        DayNightKeyPressHandler.handle(level, player);
 
-        Item item = client.player.getMainHandItem().getItem();
-        if (item == ModItems.DIAMOND_WATCH) {
-          pAmount = ServerModConfig.diamondTimeAdvancementTicks;
-        }
-        if (item == ModItems.NETHERITE_WATCH) {
-          pAmount = ServerModConfig.netheriteTimeAdvancementTicks;
-        }
-
-        if (!ServerModConfig.useLongTimeDelta) {
-          level.setDayTime(level.getDayTime() + pAmount);
-        } else {
-          TimeManager.CLIENT.addToRemainingTime((int) pAmount);
-        }
-
-        // player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
-        // player.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
-        player.playSound(SoundEvents.BELL_BLOCK, 1, 1);
-        player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
-
-        System.out.println("sending packet");
         ClientPlayNetworking.send(FabricNetwork.Packets.DAY_NIGHT_C2S, PacketByteBufs.create());
       }
     });

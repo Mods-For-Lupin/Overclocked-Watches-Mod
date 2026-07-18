@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Player.class)
-public class FabricPlayerMixin {
+public class PlayerMixin {
 
   @Unique
   private static void unique_$_forceGrowth(CropBlock crop, BlockState state, ServerLevel level, BlockPos pos) {
@@ -30,7 +30,7 @@ public class FabricPlayerMixin {
     }
   }
 
-  @Inject(method = "tick", at = @At("TAIL"))
+  @Inject(method = "tick()V", at = @At("TAIL"))
   private void injected_$_onTick(CallbackInfo ci) {
 
     Player instancePlayer = (Player) (Object) this;
@@ -39,7 +39,6 @@ public class FabricPlayerMixin {
       return;
     }
 
-    // ServerPlayer player = (ServerPlayer) (Object) this;
     ServerLevel level = (ServerLevel) player.level();
     if (!(level.getGameTime() % 20 == 0)) {
       return;

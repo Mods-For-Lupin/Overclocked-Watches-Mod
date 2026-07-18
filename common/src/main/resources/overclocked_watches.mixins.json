@@ -5,9 +5,14 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AccessorCooldownInstance",
+    "ItemCooldownsMixin",
+    "MobMixin",
+    "PlayerMixin"
   ],
   "client": [
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "LivingEntityRendererAccessor"
   ],
   "server": [
   ],

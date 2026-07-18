@@ -2,6 +2,7 @@ package io.github.jason13official.overclocked_watches;
 
 import io.github.jason13official.overclocked_watches.core.curio.WearableWatchCurio;
 import io.github.jason13official.overclocked_watches.core.network.ForgeNetwork;
+import io.github.jason13official.overclocked_watches.core.network.packet.ConfigSyncPayload;
 import io.github.jason13official.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
@@ -17,7 +18,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -66,11 +66,7 @@ public class OverclockedWatchesForge {
       if (!(event.getEntity() instanceof ServerPlayer player)) {
         return;
       }
-      ForgeNetwork.sendToPlayer(new ForgeConfigSyncS2CPacket(ServerModConfig.dayNightCycleAllowed, ServerModConfig.defaultDayNightKey, ServerModConfig.useLongTimeDelta, ServerModConfig.longTimeDelta,
-              ServerModConfig.goldenWatchDurability, ServerModConfig.diamondWatchDurability, ServerModConfig.netheriteWatchDurability, ServerModConfig.goldenWatchCharges,
-              ServerModConfig.diamondWatchCharges, ServerModConfig.netheriteWatchCharges, ServerModConfig.goldenWatchCooldownMinutes, ServerModConfig.diamondWatchCooldownMinutes,
-              ServerModConfig.netheriteWatchCooldownMinutes, ServerModConfig.goldenTimeAdvancementTicks, ServerModConfig.diamondTimeAdvancementTicks, ServerModConfig.netheriteTimeAdvancementTicks),
-          player);
+      ForgeNetwork.sendToPlayer(new ForgeConfigSyncS2CPacket(ConfigSyncPayload.fromServerConfig()), player);
     });
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<TickEvent.ServerTickEvent>) consumer -> {
@@ -78,13 +74,9 @@ public class OverclockedWatchesForge {
         return;
       }
       ServerLevel level = consumer.getServer().overworld();
-      if (level.getGameTime() % 2 != 0) {
-        return;
-      }
       if (ServerModConfig.useLongTimeDelta && TimeManager.SERVER.shouldOperate()) {
         TimeManager.SERVER.operate(level);
       }
-      System.out.println("server " + level.getDayTime());
     });
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) consumer -> {
@@ -92,11 +84,8 @@ public class OverclockedWatchesForge {
       OverclockedWatchesUtil.loadCooldowns(player.getPersistentData(), player);
     });
 
-    MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.Clone>) consumer -> {
-      CompoundTag temp = new CompoundTag();
-      OverclockedWatchesUtil.saveCooldowns(temp, consumer.getOriginal());
-      OverclockedWatchesUtil.loadCooldowns(temp, consumer.getEntity());
-    });
+    MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.Clone>) consumer ->
+        OverclockedWatchesUtil.copyCooldowns(consumer.getOriginal(), consumer.getEntity()));
 
     MinecraftForge.EVENT_BUS.addListener((Consumer<AddReloadListenerEvent>) event -> {
       event.addListener(new ResourceReloadListener());

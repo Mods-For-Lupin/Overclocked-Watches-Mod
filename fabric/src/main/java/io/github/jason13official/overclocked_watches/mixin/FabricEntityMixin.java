@@ -25,7 +25,7 @@ public abstract class FabricEntityMixin implements IEntityDataSaver {
     return persistentData;
   }
 
-  @Inject(method = "save", at = @At("HEAD"))
+  @Inject(method = "saveWithoutId", at = @At("HEAD"))
   protected void injectWriteMethod(CompoundTag nbt, CallbackInfoReturnable info) {
     if (persistentData != null) {
       nbt.put("ocw.watch_data", persistentData);

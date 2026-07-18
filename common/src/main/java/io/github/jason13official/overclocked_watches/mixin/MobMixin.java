@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Mob.class)
-public class FabricMobMixin {
+public class MobMixin {
 
   @Inject(method = "tick", at = @At("TAIL"))
   private void injected_$_onTick(CallbackInfo callbackInfo) {

@@ -3,6 +3,7 @@ package io.github.jason13official.overclocked_watches.impl.client.item.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.jason13official.overclocked_watches.impl.client.item.model.ArmsModel;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import java.util.function.Function;
 import net.minecraft.client.model.geom.ModelPart;
@@ -39,6 +40,12 @@ public class WatchRenderer implements IWatchRenderer {
     this.slimTexture = slimTexture;
     this.wideModel = model.apply(false);
     this.slimModel = model.apply(true);
+  }
+
+  public static void registerAll() {
+    Services.PLATFORM.registerWatchRenderer(ModItems.GOLDEN_WATCH, () -> new WatchRenderer("golden_watch", ArmsModel::bakeGoldenWatchTextureOnModel));
+    Services.PLATFORM.registerWatchRenderer(ModItems.DIAMOND_WATCH, () -> new WatchRenderer("diamond_watch", ArmsModel::bakeDiamondWatchTextureOnModel));
+    Services.PLATFORM.registerWatchRenderer(ModItems.NETHERITE_WATCH, () -> new WatchRenderer("netherite_watch", ArmsModel::bakeNetheriteWatchTextureOnModel));
   }
 
   @Nullable

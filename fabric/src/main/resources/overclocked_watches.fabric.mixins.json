@@ -5,11 +5,7 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "AccessorCooldownInstance",
     "FabricEntityMixin",
-    "FabricItemCooldownsMixin",
-    "FabricMobMixin",
-    "FabricPlayerMixin",
     "FabricServerPlayerMixin"
   ],
   "client": [

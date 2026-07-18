@@ -64,6 +64,12 @@ public class OverclockedWatchesUtil {
     tag.put("ocw.watch_data", cooldowns);
   }
 
+  public static void copyCooldowns(Player oldPlayer, Player newPlayer) {
+    CompoundTag temp = new CompoundTag();
+    saveCooldowns(temp, oldPlayer);
+    loadCooldowns(temp, newPlayer);
+  }
+
   public static void addGoldenGrowthParticles(ServerLevel level, BlockPos blockPos, int particleCount) {
     for (int i = 0; i < particleCount; ++i) {
       level.sendParticles(ModParticles.GOLDEN_WATCH_GROWTH, ((double) blockPos.getX()) + level.random.nextDouble(), ((double) blockPos.getY()) + 0.5D,

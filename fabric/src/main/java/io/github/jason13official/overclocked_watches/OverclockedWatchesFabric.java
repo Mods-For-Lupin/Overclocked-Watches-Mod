@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
@@ -60,12 +59,7 @@ public class OverclockedWatchesFabric implements ModInitializer {
 //            // OverclockedWatchesUtil.loadCooldowns(((IEntityDataSaver) player).getPersistentData(), player);
 //        });
 
-    ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, isAlive) -> {
-      // if (!isAlive) return;
-      CompoundTag temp = new CompoundTag();
-      OverclockedWatchesUtil.saveCooldowns(temp, oldPlayer);
-      OverclockedWatchesUtil.loadCooldowns(temp, newPlayer);
-    });
+    ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, isAlive) -> OverclockedWatchesUtil.copyCooldowns(oldPlayer, newPlayer));
 
     ServerTickEvents.START_SERVER_TICK.register(server -> {
       // if (server.getTickCount() % 2 != 0) return;

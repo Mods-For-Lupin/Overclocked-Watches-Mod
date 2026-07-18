@@ -3,6 +3,7 @@ package io.github.jason13official.overclocked_watches.impl.common.world.item;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import java.util.List;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -105,6 +106,11 @@ public class WatchItem extends Item {
       }
     } else {
       tooltip.add(Component.translatable("text.overclocked_watches.charges", stackData.getInt(CHARGES)));
+    }
+
+    if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getCooldowns().isOnCooldown(this)) {
+
+      tooltip.add(Component.literal("Remaining percent " + String.valueOf(Minecraft.getInstance().player.getCooldowns().getCooldownPercent(this, 1.0f))));
     }
   }
 

@@ -4,17 +4,13 @@ import io.github.jason13official.overclocked_watches.client.ArmRenderHandler;
 import io.github.jason13official.overclocked_watches.client.KeyInputHandlerForge;
 import io.github.jason13official.overclocked_watches.core.network.ForgeNetwork;
 import io.github.jason13official.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket;
+import io.github.jason13official.overclocked_watches.impl.client.DayNightKeyPressHandler;
 import io.github.jason13official.overclocked_watches.impl.client.item.RendererLayers;
-import io.github.jason13official.overclocked_watches.impl.client.item.RendererUtil;
-import io.github.jason13official.overclocked_watches.impl.client.item.model.ArmsModel;
 import io.github.jason13official.overclocked_watches.impl.client.item.renderer.WatchRenderer;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
-import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
-import io.github.jason13official.overclocked_watches.impl.common.world.particle.WatchGrowthParticle;
 import io.github.jason13official.overclocked_watches.mixin.LivingEntityRendererAccessor;
-import io.github.jason13official.overclocked_watches.platform.Services;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
@@ -23,9 +19,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -61,13 +55,9 @@ public class OverclockedWatchesClientForge {
       if (level == null || level.dimension() != Level.OVERWORLD) {
         return;
       }
-      if (level.getGameTime() % 2 != 0) {
-        return;
-      }
       if (ServerModConfig.useLongTimeDelta && TimeManager.CLIENT.shouldOperate()) {
         TimeManager.CLIENT.operate(level);
       }
-      System.out.println("client " + level.getDayTime());
     });
   }
 
@@ -76,20 +66,11 @@ public class OverclockedWatchesClientForge {
 
   public void onRegisterEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
 
-    event.registerLayerDefinition(RendererLayers.GOLDEN_WATCH_WIDE, RendererLayers.layer(() -> RendererUtil.createWatchModel(false), 32, 32));
-    event.registerLayerDefinition(RendererLayers.GOLDEN_WATCH_SLIM, RendererLayers.layer(() -> RendererUtil.createWatchModel(true), 32, 32));
-    event.registerLayerDefinition(RendererLayers.DIAMOND_WATCH_WIDE, RendererLayers.layer(() -> RendererUtil.createWatchModel(false), 32, 32));
-    event.registerLayerDefinition(RendererLayers.DIAMOND_WATCH_SLIM, RendererLayers.layer(() -> RendererUtil.createWatchModel(true), 32, 32));
-    event.registerLayerDefinition(RendererLayers.NETHERITE_WATCH_WIDE, RendererLayers.layer(() -> RendererUtil.createWatchModel(false), 32, 32));
-    event.registerLayerDefinition(RendererLayers.NETHERITE_WATCH_SLIM, RendererLayers.layer(() -> RendererUtil.createWatchModel(true), 32, 32));
+    RendererLayers.register(event::registerLayerDefinition);
   }
 
   public void onClientSetup(FMLClientSetupEvent event) {
-    event.enqueueWork(() -> {
-      Services.PLATFORM.registerWatchRenderer(ModItems.GOLDEN_WATCH, () -> new WatchRenderer("golden_watch", ArmsModel::bakeGoldenWatchTextureOnModel));
-      Services.PLATFORM.registerWatchRenderer(ModItems.DIAMOND_WATCH, () -> new WatchRenderer("diamond_watch", ArmsModel::bakeDiamondWatchTextureOnModel));
-      Services.PLATFORM.registerWatchRenderer(ModItems.NETHERITE_WATCH, () -> new WatchRenderer("netherite_watch", ArmsModel::bakeNetheriteWatchTextureOnModel));
-    });
+    event.enqueueWork(WatchRenderer::registerAll);
   }
 
   public void onAddEntityRendererLayers(EntityRenderersEvent.AddLayers event) {
@@ -119,9 +100,7 @@ public class OverclockedWatchesClientForge {
   }
 
   public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
-    event.registerSpriteSet(ModParticles.GOLDEN_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
-    event.registerSpriteSet(ModParticles.DIAMOND_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
-    event.registerSpriteSet(ModParticles.NETHERITE_WATCH_GROWTH, WatchGrowthParticle.HappyVillagerParticleCopiedProvider::new);
+    ModParticles.registerProviders((particleType, provider) -> event.registerSpriteSet(particleType, provider::apply));
   }
 
   public void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
@@ -138,26 +117,7 @@ public class OverclockedWatchesClientForge {
         return;
       }
 
-      long pAmount = ServerModConfig.goldenTimeAdvancementTicks;
-
-      Item item = client.player.getMainHandItem().getItem();
-      if (item == ModItems.DIAMOND_WATCH) {
-        pAmount = ServerModConfig.diamondTimeAdvancementTicks;
-      }
-      if (item == ModItems.NETHERITE_WATCH) {
-        pAmount = ServerModConfig.netheriteTimeAdvancementTicks;
-      }
-
-      if (!ServerModConfig.useLongTimeDelta) {
-        level.setDayTime(level.getDayTime() + pAmount);
-      } else {
-        TimeManager.CLIENT.addToRemainingTime((int) pAmount);
-      }
-
-      // player.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
-      // player.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
-      player.playSound(SoundEvents.BELL_BLOCK, 1, 1);
-      player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
+      DayNightKeyPressHandler.handle(level, player);
 
       ForgeNetwork.sendToServer(new ForgeDayNightC2SPacket());
     }

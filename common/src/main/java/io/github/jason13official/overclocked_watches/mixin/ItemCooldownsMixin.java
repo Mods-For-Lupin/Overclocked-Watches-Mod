@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ItemCooldowns.class)
-public abstract class FabricItemCooldownsMixin implements IItemCooldowns {
+public abstract class ItemCooldownsMixin implements IItemCooldowns {
 
   @Shadow
   @Final
@@ -19,7 +19,7 @@ public abstract class FabricItemCooldownsMixin implements IItemCooldowns {
   @Shadow
   private int tickCount;
 
-  public FabricItemCooldownsMixin() {
+  public ItemCooldownsMixin() {
   }
 
   @Shadow

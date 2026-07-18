@@ -1,6 +1,7 @@
 package io.github.jason13official.overclocked_watches.impl.client.item;
 
 import io.github.jason13official.overclocked_watches.Constants;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -34,5 +35,14 @@ public class RendererLayers {
 
   public static Supplier<LayerDefinition> layer(Supplier<MeshDefinition> mesh, int textureWidth, int textureHeight) {
     return () -> LayerDefinition.create(mesh.get(), textureWidth, textureHeight);
+  }
+
+  public static void register(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> consumer) {
+    consumer.accept(GOLDEN_WATCH_WIDE, layer(() -> RendererUtil.createWatchModel(false), 32, 32));
+    consumer.accept(GOLDEN_WATCH_SLIM, layer(() -> RendererUtil.createWatchModel(true), 32, 32));
+    consumer.accept(DIAMOND_WATCH_WIDE, layer(() -> RendererUtil.createWatchModel(false), 32, 32));
+    consumer.accept(DIAMOND_WATCH_SLIM, layer(() -> RendererUtil.createWatchModel(true), 32, 32));
+    consumer.accept(NETHERITE_WATCH_WIDE, layer(() -> RendererUtil.createWatchModel(false), 32, 32));
+    consumer.accept(NETHERITE_WATCH_SLIM, layer(() -> RendererUtil.createWatchModel(true), 32, 32));
   }
 }
