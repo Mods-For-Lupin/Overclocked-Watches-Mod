@@ -32,12 +32,12 @@ side = "BOTH"
 modId = "monolib"
 mandatory = true
 versionRange = "[0,)"
-ordering = "AFTER"
+ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "curios"
 mandatory = true
-versionRange = "[5.8.1+1.20.1,)"
-ordering = "AFTER"
+versionRange = "[0,)"
+ordering = "NONE"
 side = "BOTH"

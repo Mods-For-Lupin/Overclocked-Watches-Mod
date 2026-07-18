@@ -38,6 +38,8 @@ public class OverclockedWatchesClientForge {
 
   public OverclockedWatchesClientForge(IEventBus modEventBus) {
 
+    OverclockedWatchesClient.init();
+
     modEventBus.addListener(this::onRegisterEntityLayerDefinitions);
     modEventBus.addListener(this::onClientSetup);
     modEventBus.addListener(this::onAddEntityRendererLayers);
@@ -120,17 +122,6 @@ public class OverclockedWatchesClientForge {
       DayNightKeyPressHandler.handle(level, player);
 
       ForgeNetwork.sendToServer(new ForgeDayNightC2SPacket());
-    }
-  }
-
-  @Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-  public static class ClientModBusEvents {
-
-    @SubscribeEvent
-    public static void onClientSetup(final FMLClientSetupEvent event) {
-      event.enqueueWork(() -> {
-        OverclockedWatchesClient.init();
-      });
     }
   }
 }

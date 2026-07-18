@@ -6,37 +6,37 @@ plugins {
     id("org.spongepowered.mixin") version "0.7-SNAPSHOT" apply(false)
 
     // PacifistMC's Forgix, used to create the final merged jar
-    id "io.github.pacifistmc.forgix" version "1.2.9"
+    // id "io.github.pacifistmc.forgix" version "1.2.9"
 }
 
-forgix {
-    group = "${project.group}" // same as targetting ${group}, just not sure if expandProps occurs before this
-    mergedJarName = "${mod_id}-merged-${minecraft_version}-${project.version}.jar"
-    outputDir = "build/libs"
-
-    custom {
-        projectName = "common"
-        jarLocation = "build/libs/${mod_id}-common-${minecraft_version}-${project.version}.jar"
-    }
-
-    fabric {
-        projectName = "fabric"
-        jarLocation = "build/libs/${mod_id}-fabric-${minecraft_version}-${project.version}.jar"
-    }
-
-    forge {
-        projectName = "forge"
-        jarLocation = "build/libs/${mod_id}-forge-${minecraft_version}-${project.version}.jar"
-
-        mixin "${mod_id}.forge.mixins.json"
-    }
-}
+//forgix {
+//    group = "${project.group}" // same as targetting ${group}, just not sure if expandProps occurs before this
+//    mergedJarName = "${mod_id}-merged-${minecraft_version}-${project.version}.jar"
+//    outputDir = "build/libs"
+//
+//    custom {
+//        projectName = "common"
+//        jarLocation = "build/libs/${mod_id}-common-${minecraft_version}-${project.version}.jar"
+//    }
+//
+//    fabric {
+//        projectName = "fabric"
+//        jarLocation = "build/libs/${mod_id}-fabric-${minecraft_version}-${project.version}.jar"
+//    }
+//
+//    forge {
+//        projectName = "forge"
+//        jarLocation = "build/libs/${mod_id}-forge-${minecraft_version}-${project.version}.jar"
+//
+//        mixin "${mod_id}.forge.mixins.json"
+//    }
+//}
 
 subprojects {
     apply plugin: 'java'
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-        
+
     jar {
         manifest {
             attributes([
@@ -73,7 +73,7 @@ subprojects {
     }
 
     tasks.withType(JavaCompile).configureEach {
-    
+
         it.options.encoding = 'UTF-8'
         it.options.getRelease().set(17)
     }

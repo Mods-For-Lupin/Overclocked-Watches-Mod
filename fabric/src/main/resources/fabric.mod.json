@@ -32,7 +32,7 @@
     "minecraft": "${minecraft_version}",
     "java": ">=17",
     "monolib": "*",
-    "trinkets": ">=3.7.0"
+    "trinkets": "*"
   },
   "suggests": {
     "another-mod": "*"
