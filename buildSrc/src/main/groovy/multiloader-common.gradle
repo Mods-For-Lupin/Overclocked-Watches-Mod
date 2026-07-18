@@ -41,6 +41,12 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven { url = "https://maven.terraformersmc.com" }
+    maven { url = "https://maven.architectury.dev" }
+    maven {
+        name = "Ladysnake Libs"
+        url = 'https://maven.ladysnake.org/releases'
+    }
 }
 
 // Declare capabilities on the outgoing configurations.

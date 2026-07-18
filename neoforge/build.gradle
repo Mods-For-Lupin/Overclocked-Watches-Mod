@@ -38,6 +38,8 @@ neoForge {
 
 
 dependencies {
+
+    implementation "curse.maven:curios-309927:6529130"
     // implementation "curse.maven:monolib-968432:6123990"
 }
 

@@ -1,6 +1,17 @@
 package io.github.jason13official.overclocked_watches.platform.services;
 
+import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
+import io.github.jason13official.overclocked_watches.platform.Services;
 import java.nio.file.Path;
+import java.util.function.Supplier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public interface IPlatformHelper {
 
@@ -43,5 +54,30 @@ public interface IPlatformHelper {
     return getGameDirectory().resolve("config");
   }
 
+  CreativeModeTab.Builder tabBuilder();
+
   boolean isClientSide();
+
+  <T extends Item> IWatchRenderer getWatchRenderer(T item);
+
+  <T extends Item> void registerWatchRenderer(T item, Supplier<IWatchRenderer> rendererSupplier);
+
+  boolean playerHasWatchEquipped(Player player, WatchTier tier);
+
+  default boolean hasAnyWatchEquipped(Player player) {
+    for (WatchTier tier : WatchTier.values()) {
+      if (Services.PLATFORM.playerHasWatchEquipped(player, tier)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  ItemStack getEquippedWatch(Player player, WatchTier tier);
+
+  Item getItemFromRL(ResourceLocation rl);
+
+  ResourceLocation getRLFromItem(Item item);
+
+  CompoundTag getPersistentData(Entity entity);
 }
