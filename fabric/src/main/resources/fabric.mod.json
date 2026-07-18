@@ -8,18 +8,18 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://github.com/Cursee-Development",
-        "sources": "https://github.com/Cursee-Development"
+        "homepage": "https://github.com/Mods-For-Lupin",
+        "sources": "https://github.com/Mods-For-Lupin"
     },
     "license": "${license}",
     "icon": "${mod_id}.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.cursee.overclocked_watches.OverclockedWatchesFabric"
+          "io.github.jason13official.overclocked_watches.OverclockedWatchesFabric"
         ],
         "client": [
-            "com.cursee.overclocked_watches.OverclockedWatchesClientFabric"
+          "io.github.jason13official.overclocked_watches.OverclockedWatchesClientFabric"
         ]
     },
     "mixins": [
@@ -31,7 +31,6 @@
         "fabric": "*",
         "minecraft": "${minecraft_version}",
         "java": ">=17",
-        "monolib": ">=2.0.0",
         "trinkets": ">=3.7.0"
     },
     "suggests": {

@@ -24,10 +24,14 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":common")
 
+    implementation 'com.electronwill.night-config:toml:3.6.0'
+    include 'com.electronwill.night-config:core:3.6.0'
+    include 'com.electronwill.night-config:toml:3.6.0'
+
     // ModMenu
     modImplementation "curse.maven:modmenu-308702:5162837"
 
-    modImplementation "curse.maven:monolib-968432:6123964"
+    // modImplementation "curse.maven:monolib-968432:6123964"
 
     // Trinkets
     modApi include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.0")
