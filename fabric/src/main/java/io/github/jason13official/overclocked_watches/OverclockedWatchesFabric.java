@@ -5,6 +5,7 @@ import io.github.jason13official.overclocked_watches.core.network.FabricNetwork;
 import io.github.jason13official.overclocked_watches.core.network.packet.FabricConfigSyncS2CPacket;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModDataComponents;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModTabs;
@@ -36,6 +37,7 @@ public class OverclockedWatchesFabric implements ModInitializer {
     bind(BuiltInRegistries.ITEM, ModItems::register);
     bind(BuiltInRegistries.CREATIVE_MODE_TAB, ModTabs::register);
     bind(BuiltInRegistries.PARTICLE_TYPE, ModParticles::register);
+    bind(BuiltInRegistries.DATA_COMPONENT_TYPE, ModDataComponents::register);
 
     FabricNetwork.Packets.registerPacketIDsAndReceivers();
 

@@ -19,8 +19,6 @@ import net.minecraft.world.item.ItemStack;
 
 public class DayNightC2SHandler {
 
-  public static final String CHARGES = "charges";
-
   public static void handle(MinecraftServer server, ServerPlayer player) {
 
     if (!ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.get()) {

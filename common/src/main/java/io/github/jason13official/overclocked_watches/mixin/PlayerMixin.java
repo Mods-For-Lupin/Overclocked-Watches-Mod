@@ -97,10 +97,7 @@ public class PlayerMixin {
       }
 
       ItemStack equippedWatch = Services.PLATFORM.getEquippedWatch(player, tier);
-      equippedWatch.hurt(1, player.getRandom(), player);
-      if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
-        equippedWatch.shrink(1);
-      }
+      equippedWatch.hurtAndBreak(1, level, player, item -> {});
     }
   }
 }

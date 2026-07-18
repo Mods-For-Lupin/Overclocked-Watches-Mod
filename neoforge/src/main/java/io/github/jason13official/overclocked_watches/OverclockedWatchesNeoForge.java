@@ -2,11 +2,11 @@ package io.github.jason13official.overclocked_watches;
 
 import io.github.jason13official.overclocked_watches.core.curio.WearableWatchCurio;
 import io.github.jason13official.overclocked_watches.core.network.ForgeNetwork;
-import io.github.jason13official.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.impl.common.item.WatchItem;
 import io.github.jason13official.overclocked_watches.impl.common.network.packet.ConfigSyncPayload;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModDataComponents;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModTabs;
@@ -25,11 +25,11 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -52,16 +52,17 @@ public class OverclockedWatchesNeoForge {
     bind(Registries.ITEM, ModItems::register);
     bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
     bind(Registries.PARTICLE_TYPE, ModParticles::register);
+    bind(Registries.DATA_COMPONENT_TYPE, ModDataComponents::register);
 
-    NeoForge.EVENT_BUS.addGenericListener(ItemStack.class, this::onAttachCapabilities);
+    EVENT_BUS.addListener(this::registerCapabilities);
 
-    ForgeNetwork.register();
+    EVENT_BUS.addListener(ForgeNetwork::register);
 
     NeoForge.EVENT_BUS.addListener((Consumer<EntityJoinLevelEvent>) event -> {
       if (!(event.getEntity() instanceof ServerPlayer player)) {
         return;
       }
-      ForgeNetwork.sendToPlayer(new ForgeConfigSyncS2CPacket(ConfigSyncPayload.fromServerConfig()), player);
+      ForgeNetwork.sendToPlayer(ConfigSyncPayload.fromServerConfig(), player);
     });
 
     NeoForge.EVENT_BUS.addListener((Consumer<ServerTickEvent.Pre>) consumer -> {
@@ -88,10 +89,10 @@ public class OverclockedWatchesNeoForge {
     }
   }
 
-  private void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-    if (event.getObject().getItem() instanceof WatchItem item) {
-      event.addCapability(CuriosCapability.ID_ITEM, CurioItemCapability.createProvider(new WearableWatchCurio(item, event.getObject())));
-    }
+  private void registerCapabilities(RegisterCapabilitiesEvent event) {
+    event.registerItem(CuriosCapability.ITEM,
+        (itemStack, context) -> new WearableWatchCurio((WatchItem) itemStack.getItem(), itemStack),
+        ModItems.GOLDEN_WATCH, ModItems.DIAMOND_WATCH, ModItems.NETHERITE_WATCH);
   }
 
   public <T> void bind(ResourceKey<Registry<T>> registryKey, Consumer<BiConsumer<T, ResourceLocation>> source) {

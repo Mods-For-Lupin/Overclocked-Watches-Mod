@@ -1,20 +1,18 @@
 package io.github.jason13official.overclocked_watches.api.common.data;
 
 import io.github.jason13official.overclocked_watches.impl.common.item.WatchItem;
-import net.minecraft.nbt.CompoundTag;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModDataComponents;
 import net.minecraft.world.item.ItemStack;
 
 public class WatchItemData {
 
-  public static ItemStack initializeTag(WatchItem watch, ItemStack itemStack) {
+  public static ItemStack initializeCharges(WatchItem watch, ItemStack itemStack) {
 
-    CompoundTag stackData = itemStack.getOrCreateTag();
-    if (stackData.contains(WatchItem.CHARGES_TAG, CompoundTag.TAG_INT)) {
+    if (itemStack.has(ModDataComponents.CHARGES)) {
       return itemStack;
     }
 
-    stackData.putInt(WatchItem.CHARGES_TAG, watch.getTier().getWatchCharges());
-    itemStack.save(stackData);
+    itemStack.set(ModDataComponents.CHARGES, watch.getTier().getWatchCharges());
 
     return itemStack.copy();
   }

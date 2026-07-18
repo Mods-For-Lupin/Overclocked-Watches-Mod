@@ -1,10 +1,10 @@
 package io.github.jason13official.overclocked_watches.impl.common.item;
 
 import io.github.jason13official.overclocked_watches.api.common.data.WatchItemData;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModDataComponents;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import java.util.List;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,16 +16,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 public class WatchItem extends Item {
-
-  public static final String CHARGES_TAG = "OverclockCharges";
 
   private final WatchTier tier;
 
   public WatchItem(WatchTier tier) {
-    super(new Properties().durability(tier.getItemDurability()));
+    super(new Properties().durability(tier.getItemDurability()).component(ModDataComponents.CHARGES, tier.getWatchCharges()));
     this.tier = tier;
   }
 
@@ -41,24 +38,23 @@ public class WatchItem extends Item {
 
     ItemStack itemStack = new ItemStack(this);
 
-    return WatchItemData.initializeTag(this, itemStack);
+    return WatchItemData.initializeCharges(this, itemStack);
   }
 
   @Override
-  public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> tooltip, TooltipFlag tooltipFlag) {
+  public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
 
-    CompoundTag stackData = itemStack.getOrCreateTag();
-    if (!stackData.contains(CHARGES_TAG, CompoundTag.TAG_INT)) {
+    if (!itemStack.has(ModDataComponents.CHARGES)) {
       tooltip.add(Component.translatable("text.overclocked_watches.default_charges", this.getTier().getWatchCharges()));
     } else {
-      tooltip.add(Component.translatable("text.overclocked_watches.charges", stackData.getInt(CHARGES_TAG)));
+      tooltip.add(Component.translatable("text.overclocked_watches.charges", itemStack.get(ModDataComponents.CHARGES)));
     }
   }
 
   @Override
   public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int slotIndex, boolean slotSelected) {
 
-    WatchItemData.initializeTag(this, itemStack);
+    WatchItemData.initializeCharges(this, itemStack);
   }
 
   // interaction when clicking in the air
@@ -72,10 +68,9 @@ public class WatchItem extends Item {
 
     // task: validate charges, update time, consume charge, apply cooldowns
 
-    CompoundTag unvalidatedStackData = itemInHand.getOrCreateTag();
-    if (!unvalidatedStackData.contains(CHARGES_TAG, CompoundTag.TAG_INT)) {
-      itemInHand = WatchItemData.initializeTag(this, itemInHand);
-    } else if (unvalidatedStackData.getInt(CHARGES_TAG) == 0) {
+    if (!itemInHand.has(ModDataComponents.CHARGES)) {
+      itemInHand = WatchItemData.initializeCharges(this, itemInHand);
+    } else if (itemInHand.get(ModDataComponents.CHARGES) == 0) {
       return InteractionResultHolder.pass(itemInHand);
     }
     // we have validated charges to be either initialized or non-zero
@@ -83,11 +78,6 @@ public class WatchItem extends Item {
     serverLevel.setDayTime((serverLevel.getDayTime() + this.getTier().getTimeAdvancementTicks()) % 24_000L);
     // we have advanced the server daytime
 
-    CompoundTag validatedStackData = itemInHand.getOrCreateTag();
-    final int newChargeCount = validatedStackData.getInt(CHARGES_TAG) - 1;
-    // validatedStackData.remove(CHARGES_TAG); // shouldn't need this, putting should overwrite current value in backing map
-    validatedStackData.putInt(CHARGES_TAG, newChargeCount);
-    itemInHand.save(validatedStackData);
     OverclockedWatchesUtil.consumeCharge(itemInHand);
     // we have consumed a charge
 

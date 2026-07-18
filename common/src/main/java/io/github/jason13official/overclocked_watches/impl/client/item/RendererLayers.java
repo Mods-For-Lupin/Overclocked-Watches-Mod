@@ -29,7 +29,7 @@ public class RendererLayers {
   }
 
   public static ModelLayerLocation createLayerLocation(String name) {
-    return new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, name), name);
+    return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name), name);
   }
 
   public static Supplier<LayerDefinition> layer(Supplier<MeshDefinition> mesh, int textureWidth, int textureHeight) {

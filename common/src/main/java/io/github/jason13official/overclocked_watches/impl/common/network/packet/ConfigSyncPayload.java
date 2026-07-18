@@ -1,12 +1,24 @@
 package io.github.jason13official.overclocked_watches.impl.common.network.packet;
 
+import io.github.jason13official.overclocked_watches.OverclockedWatches;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig.TierConfig;
 import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public record ConfigSyncPayload(boolean dayNightCycleAllowed, boolean useLongTimeDelta, long longTimeDelta,
-                                 long[] durability, long[] charges, long[] cooldownMinutes, long[] timeAdvancementTicks) {
+                                 long[] durability, long[] charges, long[] cooldownMinutes, long[] timeAdvancementTicks) implements CustomPacketPayload {
+
+  public static final CustomPacketPayload.Type<ConfigSyncPayload> TYPE = new CustomPacketPayload.Type<>(OverclockedWatches.identifier("config_sync"));
+
+  public static final StreamCodec<FriendlyByteBuf, ConfigSyncPayload> STREAM_CODEC = CustomPacketPayload.codec(ConfigSyncPayload::write, ConfigSyncPayload::read);
+
+  @Override
+  public CustomPacketPayload.Type<ConfigSyncPayload> type() {
+    return TYPE;
+  }
 
   private static final int TIER_COUNT = WatchTier.values().length;
 

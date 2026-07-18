@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import io.github.jason13official.overclocked_watches.Constants;
 import io.github.jason13official.overclocked_watches.impl.client.ClientModConfig;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 
 public class KeyInputHandlerForge {
 

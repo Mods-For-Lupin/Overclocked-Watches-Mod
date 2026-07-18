@@ -58,10 +58,7 @@ public class MobMixin {
 
         if (player.getRandom().nextInt(0, 20) == 1) {
           ItemStack equippedWatch = Services.PLATFORM.getEquippedWatch(player, tier);
-          equippedWatch.hurt(1, player.getRandom(), (ServerPlayer) player);
-          if (equippedWatch.getDamageValue() >= equippedWatch.getMaxDamage()) {
-            equippedWatch.shrink(1);
-          }
+          equippedWatch.hurtAndBreak(1, level, (ServerPlayer) player, item -> {});
         }
       }
     });

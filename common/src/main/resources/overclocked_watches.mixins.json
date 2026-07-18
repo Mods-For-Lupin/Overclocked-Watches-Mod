@@ -4,8 +4,15 @@
   "package": "io.github.jason13official.overclocked_watches.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
-  "mixins": [],
-  "client": [],
+  "mixins": [
+    "AccessorCooldownInstance",
+    "ItemCooldownsMixin",
+    "MobMixin",
+    "PlayerMixin"
+  ],
+  "client": [
+    "LivingEntityRendererAccessor"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

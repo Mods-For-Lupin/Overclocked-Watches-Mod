@@ -1,53 +1,35 @@
 package io.github.jason13official.overclocked_watches.core.network;
 
-import io.github.jason13official.overclocked_watches.OverclockedWatches;
-import io.github.jason13official.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
-import io.github.jason13official.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket;
+import io.github.jason13official.overclocked_watches.impl.common.network.packet.ConfigSyncPayload;
+import io.github.jason13official.overclocked_watches.impl.common.network.packet.DayNightC2SHandler;
+import io.github.jason13official.overclocked_watches.impl.common.network.packet.DayNightC2SPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ForgeNetwork {
 
-  private static SimpleChannel INSTANCE;
+  public static void register(RegisterPayloadHandlersEvent event) {
 
-  private static int packetId = 0;
+    PayloadRegistrar registrar = event.registrar("1.0");
 
-  private static int id() {
-    return packetId++;
+    registrar.playToServer(DayNightC2SPayload.TYPE, DayNightC2SPayload.STREAM_CODEC,
+        (payload, context) -> {
+          ServerPlayer player = (ServerPlayer) context.player();
+          DayNightC2SHandler.handle(player.getServer(), player);
+        });
+
+    registrar.playToClient(ConfigSyncPayload.TYPE, ConfigSyncPayload.STREAM_CODEC,
+        (payload, context) -> payload.applyToConfig());
   }
 
-  public static void register() {
-
-    SimpleChannel net = NetworkRegistry.ChannelBuilder
-        .named(OverclockedWatches.identifier("messages"))
-        .networkProtocolVersion(() -> "1.0")
-        .clientAcceptedVersions(s -> true)
-        .serverAcceptedVersions(s -> true)
-        .simpleChannel();
-
-    INSTANCE = net;
-
-    net.messageBuilder(ForgeDayNightC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
-        .decoder(ForgeDayNightC2SPacket::new)
-        .encoder(ForgeDayNightC2SPacket::toBytes)
-        .consumerMainThread(ForgeDayNightC2SPacket::handle)
-        .add();
-
-    net.messageBuilder(ForgeConfigSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-        .decoder(ForgeConfigSyncS2CPacket::decode)
-        .encoder(ForgeConfigSyncS2CPacket::encode)
-        .consumerMainThread(ForgeConfigSyncS2CPacket::handle)
-        .add();
+  public static void sendToPlayer(ConfigSyncPayload payload, ServerPlayer player) {
+    PacketDistributor.sendToPlayer(player, payload);
   }
 
-  public static <MSG> void sendToServer(MSG message) {
-    INSTANCE.sendToServer(message);
-  }
-
-  public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
-    INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+  public static void sendToServer(CustomPacketPayload payload) {
+    PacketDistributor.sendToServer(payload);
   }
 }

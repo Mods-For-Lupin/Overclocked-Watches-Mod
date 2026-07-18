@@ -5,7 +5,7 @@ import io.github.jason13official.overclocked_watches.api.common.data.CoolDownRec
 import io.github.jason13official.overclocked_watches.api.common.data.IEntityDataSaver;
 import io.github.jason13official.overclocked_watches.api.common.data.IItemCooldowns;
 import io.github.jason13official.overclocked_watches.impl.common.item.WatchTier;
-import io.github.jason13official.overclocked_watches.impl.common.network.packet.DayNightC2SHandler;
+import io.github.jason13official.overclocked_watches.impl.common.registry.ModDataComponents;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.platform.Services;
@@ -34,7 +34,7 @@ public class OverclockedWatchesUtil {
       cooldowns.forEach((tag) -> {
         if (tag instanceof CompoundTag compoundTag) {
           try {
-            ResourceLocation rl = new ResourceLocation(compoundTag.getString("item"));
+            ResourceLocation rl = ResourceLocation.parse(compoundTag.getString("item"));
             Item item = Services.PLATFORM.getItemFromRL(rl);
             if (item != (ModItems.GOLDEN_WATCH) && item != (ModItems.DIAMOND_WATCH) && item != (ModItems.NETHERITE_WATCH)) {
               return;
@@ -76,13 +76,11 @@ public class OverclockedWatchesUtil {
   }
 
   public static boolean consumeCharge(ItemStack itemInHand) {
-    CompoundTag data = itemInHand.getOrCreateTag();
-    if (data.getInt(DayNightC2SHandler.CHARGES) == 0) {
+    int charges = itemInHand.getOrDefault(ModDataComponents.CHARGES, 0);
+    if (charges == 0) {
       return false;
     }
-    int newCharges = data.getInt(DayNightC2SHandler.CHARGES) - 1;
-    data.putInt(DayNightC2SHandler.CHARGES, newCharges);
-    itemInHand.save(data);
+    itemInHand.set(ModDataComponents.CHARGES, charges - 1);
     return true;
   }
 }

@@ -4,9 +4,9 @@ import io.github.jason13official.overclocked_watches.impl.client.item.renderer.W
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderArmEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.client.event.RenderArmEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
@@ -14,7 +14,7 @@ import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 public abstract class ArmRenderHandler {
 
   public static void setup() {
-    MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, ArmRenderHandler::onRenderArm);
+    NeoForge.EVENT_BUS.addListener(EventPriority.LOW, ArmRenderHandler::onRenderArm);
   }
 
   public static void onRenderArm(RenderArmEvent event) {

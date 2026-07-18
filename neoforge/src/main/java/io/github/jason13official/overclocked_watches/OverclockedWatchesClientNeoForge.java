@@ -3,11 +3,11 @@ package io.github.jason13official.overclocked_watches;
 import io.github.jason13official.overclocked_watches.client.ArmRenderHandler;
 import io.github.jason13official.overclocked_watches.client.KeyInputHandlerForge;
 import io.github.jason13official.overclocked_watches.core.network.ForgeNetwork;
-import io.github.jason13official.overclocked_watches.core.network.packet.ForgeDayNightC2SPacket;
 import io.github.jason13official.overclocked_watches.impl.client.DayNightKeyPressHandler;
 import io.github.jason13official.overclocked_watches.impl.client.item.RendererLayers;
 import io.github.jason13official.overclocked_watches.impl.client.item.renderer.WatchRenderer;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
+import io.github.jason13official.overclocked_watches.impl.common.network.packet.DayNightC2SPayload;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
 import io.github.jason13official.overclocked_watches.mixin.LivingEntityRendererAccessor;
@@ -81,7 +81,7 @@ public class OverclockedWatchesClientNeoForge {
         EntityType.ZOMBIFIED_PIGLIN);
     loop:
     for (EntityType<?> entity : entities) {
-      EntityRenderer<?> renderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(entity);
+      EntityRenderer<?> renderer = event.getRenderer(entity);
       if (renderer == null) {
         continue;
       }
@@ -115,7 +115,7 @@ public class OverclockedWatchesClientNeoForge {
 
       DayNightKeyPressHandler.handle(level, player);
 
-      ForgeNetwork.sendToServer(new ForgeDayNightC2SPacket());
+      ForgeNetwork.sendToServer(new DayNightC2SPayload());
     }
   }
 

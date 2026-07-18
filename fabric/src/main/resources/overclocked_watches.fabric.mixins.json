@@ -4,8 +4,13 @@
   "package": "io.github.jason13official.overclocked_watches.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
-  "client": [],
+  "mixins": [
+    "FabricEntityMixin",
+    "FabricServerPlayerMixin"
+  ],
+  "client": [
+    "FabricPlayerRendererMixin"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1
