@@ -2,6 +2,8 @@ package io.github.jason13official.overclocked_watches;
 
 import io.github.jason13official.overclocked_watches.core.network.FabricNetwork;
 import io.github.jason13official.overclocked_watches.core.network.packet.FabricConfigSyncS2CPacket;
+import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
+import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModBlocks;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
@@ -9,8 +11,6 @@ import io.github.jason13official.overclocked_watches.impl.common.registry.ModTab
 import io.github.jason13official.overclocked_watches.impl.common.util.IEntityDataSaver;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
-import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
-import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;

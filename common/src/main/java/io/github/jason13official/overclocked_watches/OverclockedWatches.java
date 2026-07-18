@@ -1,7 +1,7 @@
 package io.github.jason13official.overclocked_watches;
 
-import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
+import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 

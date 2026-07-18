@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ModTabs {
 
-  public static final CreativeModeTab OW_TAB = Services.PLATFORM.tabBuilder()
+  public static final CreativeModeTab OVERCLOCKED_WATCHES = Services.PLATFORM.tabBuilder()
       .icon(() -> new ItemStack(ModItems.DIAMOND_WATCH))
       .title(Component.translatable("itemGroup.overclockedWatches")).displayItems((itemDisplayParameters, output) -> {
         output.accept(ModItems.GOLDEN_WATCH);
@@ -19,6 +19,6 @@ public class ModTabs {
       }).build();
 
   public static void register(BiConsumer<CreativeModeTab, ResourceLocation> consumer) {
-    consumer.accept(OW_TAB, OverclockedWatches.identifier("ow_tab"));
+    consumer.accept(OVERCLOCKED_WATCHES, OverclockedWatches.identifier("ow_tab"));
   }
 }

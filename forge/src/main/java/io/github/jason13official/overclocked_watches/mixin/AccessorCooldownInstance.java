@@ -6,15 +6,16 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ItemCooldowns.CooldownInstance.class)
 public interface AccessorCooldownInstance {
-    @Accessor
-    void setStartTime(int var1);
 
-    @Accessor
-    void setEndTime(int var1);
+  @Accessor
+  int getStartTime();
 
-    @Accessor
-    int getStartTime();
+  @Accessor
+  void setStartTime(int var1);
 
-    @Accessor
-    int getEndTime();
+  @Accessor
+  int getEndTime();
+
+  @Accessor
+  void setEndTime(int var1);
 }

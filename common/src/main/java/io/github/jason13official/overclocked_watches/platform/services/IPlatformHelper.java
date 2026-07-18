@@ -2,70 +2,75 @@ package io.github.jason13official.overclocked_watches.platform.services;
 
 import io.github.jason13official.overclocked_watches.impl.client.item.renderer.IWatchRenderer;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Supplier;
-
 public interface IPlatformHelper {
 
-    /**
-     * Gets the name of the current platform
-     *
-     * @return The name of the current platform.
-     */
-    String getPlatformName();
+  /**
+   * Gets the name of the current platform
+   *
+   * @return The name of the current platform.
+   */
+  String getPlatformName();
 
-    /**
-     * Checks if a mod with the given id is loaded.
-     *
-     * @param modId The mod to check if it is loaded.
-     * @return True if the mod is loaded, false otherwise.
-     */
-    boolean isModLoaded(String modId);
+  /**
+   * Checks if a mod with the given id is loaded.
+   *
+   * @param modId The mod to check if it is loaded.
+   * @return True if the mod is loaded, false otherwise.
+   */
+  boolean isModLoaded(String modId);
 
-    /**
-     * Check if the game is currently in a development environment.
-     *
-     * @return True if in a development environment, false otherwise.
-     */
-    boolean isDevelopmentEnvironment();
+  /**
+   * Check if the game is currently in a development environment.
+   *
+   * @return True if in a development environment, false otherwise.
+   */
+  boolean isDevelopmentEnvironment();
 
-    /**
-     * Gets the name of the environment type as a string.
-     *
-     * @return The name of the environment type.
-     */
-    default String getEnvironmentName() {
+  /**
+   * Gets the name of the environment type as a string.
+   *
+   * @return The name of the environment type.
+   */
+  default String getEnvironmentName() {
 
-        return isDevelopmentEnvironment() ? "development" : "production";
-    }
+    return isDevelopmentEnvironment() ? "development" : "production";
+  }
 
-    Path getGameDirectory();
+  Path getGameDirectory();
 
-    default Path getConfigDirectory() {
+  default Path getConfigDirectory() {
 
-      return getGameDirectory().resolve("config");
-    }
+    return getGameDirectory().resolve("config");
+  }
 
-    CreativeModeTab.Builder tabBuilder();
+  CreativeModeTab.Builder tabBuilder();
 
-    boolean isClientSide();
+  boolean isClientSide();
 
-    <T extends Item> IWatchRenderer getWatchRenderer(T item);
-    <T extends Item> void registerWatchRenderer(T item, Supplier<IWatchRenderer> rendererSupplier);
+  <T extends Item> IWatchRenderer getWatchRenderer(T item);
 
-    boolean playerHasNetheriteWatchEquipped(Player player);
-    boolean playerHasDiamondWatchEquipped(Player player);
-    boolean playerHasGoldenWatchEquipped(Player player);
+  <T extends Item> void registerWatchRenderer(T item, Supplier<IWatchRenderer> rendererSupplier);
 
-    ItemStack getEquippedNetheriteWatch(Player player);
-    ItemStack getEquippedDiamondWatch(Player player);
-    ItemStack getEquippedGoldenWatch(Player player);
+  boolean playerHasNetheriteWatchEquipped(Player player);
 
-    Item getItemFromRL(ResourceLocation rl);
-    ResourceLocation getRLFromItem(Item item);
+  boolean playerHasDiamondWatchEquipped(Player player);
+
+  boolean playerHasGoldenWatchEquipped(Player player);
+
+  ItemStack getEquippedNetheriteWatch(Player player);
+
+  ItemStack getEquippedDiamondWatch(Player player);
+
+  ItemStack getEquippedGoldenWatch(Player player);
+
+  Item getItemFromRL(ResourceLocation rl);
+
+  ResourceLocation getRLFromItem(Item item);
 }

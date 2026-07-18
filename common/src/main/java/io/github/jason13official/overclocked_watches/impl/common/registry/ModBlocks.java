@@ -1,19 +1,18 @@
 package io.github.jason13official.overclocked_watches.impl.common.registry;
 
 import io.github.jason13official.overclocked_watches.platform.Services;
+import java.util.function.BiConsumer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
-import java.util.function.BiConsumer;
-
 public class ModBlocks {
 
-    // must be registered if defined
-    // public static final Block EXAMPLE_BLOCK = new Block(BlockBehaviour.Properties.of().strength(0.5F).sound(SoundType.WOOL).pushReaction(PushReaction.DESTROY));
+  // must be registered if defined
+  // public static final Block EXAMPLE_BLOCK = new Block(BlockBehaviour.Properties.of().strength(0.5F).sound(SoundType.WOOL).pushReaction(PushReaction.DESTROY));
 
-    public static void register(BiConsumer<Block, ResourceLocation> consumer) {
-        if (Services.PLATFORM.isDevelopmentEnvironment()) {
-            // consumer.accept(EXAMPLE_BLOCK, ExampleMod.identifier("example_block"));
-        }
+  public static void register(BiConsumer<Block, ResourceLocation> consumer) {
+    if (Services.PLATFORM.isDevelopmentEnvironment()) {
+      // consumer.accept(EXAMPLE_BLOCK, ExampleMod.identifier("example_block"));
     }
+  }
 }

@@ -12,15 +12,15 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 public class TrinketRenderers implements SimpleSynchronousResourceReloadListener {
 
-    @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
-        Services.PLATFORM.registerWatchRenderer(ModItems.GOLDEN_WATCH, () -> new WatchRenderer("golden_watch", ArmsModel::bakeGoldenWatchTextureOnModel));
-        Services.PLATFORM.registerWatchRenderer(ModItems.DIAMOND_WATCH, () -> new WatchRenderer("diamond_watch", ArmsModel::bakeDiamondWatchTextureOnModel));
-        Services.PLATFORM.registerWatchRenderer(ModItems.NETHERITE_WATCH, () -> new WatchRenderer("netherite_watch", ArmsModel::bakeNetheriteWatchTextureOnModel));
-    }
+  @Override
+  public void onResourceManagerReload(ResourceManager resourceManager) {
+    Services.PLATFORM.registerWatchRenderer(ModItems.GOLDEN_WATCH, () -> new WatchRenderer("golden_watch", ArmsModel::bakeGoldenWatchTextureOnModel));
+    Services.PLATFORM.registerWatchRenderer(ModItems.DIAMOND_WATCH, () -> new WatchRenderer("diamond_watch", ArmsModel::bakeDiamondWatchTextureOnModel));
+    Services.PLATFORM.registerWatchRenderer(ModItems.NETHERITE_WATCH, () -> new WatchRenderer("netherite_watch", ArmsModel::bakeNetheriteWatchTextureOnModel));
+  }
 
-    @Override
-    public ResourceLocation getFabricId() {
-        return OverclockedWatches.identifier(Constants.MOD_ID + "_renderers");
-    }
+  @Override
+  public ResourceLocation getFabricId() {
+    return OverclockedWatches.identifier(Constants.MOD_ID + "_renderers");
+  }
 }

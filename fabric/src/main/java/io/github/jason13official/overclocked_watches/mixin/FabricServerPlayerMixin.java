@@ -1,8 +1,8 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
+import com.mojang.authlib.GameProfile;
 import io.github.jason13official.overclocked_watches.impl.common.util.IEntityDataSaver;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,15 +16,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayer.class)
 public abstract class FabricServerPlayerMixin extends Player {
 
-    public FabricServerPlayerMixin(Level l, BlockPos p, float f, GameProfile g) {
-        super(l, p, f, g);
-    }
+  public FabricServerPlayerMixin(Level l, BlockPos p, float f, GameProfile g) {
+    super(l, p, f, g);
+  }
 
-    @Inject(
-            method = {"addAdditionalSaveData"},
-            at = {@At("HEAD")}
-    )
-    private void inject$addAdditionalSaveData(CompoundTag tag0, CallbackInfo ci) {
-        OverclockedWatchesUtil.saveCooldowns(((IEntityDataSaver) this).getPersistentData(), this);
-    }
+  @Inject(
+      method = {"addAdditionalSaveData"},
+      at = {@At("HEAD")}
+  )
+  private void inject$addAdditionalSaveData(CompoundTag tag0, CallbackInfo ci) {
+    OverclockedWatchesUtil.saveCooldowns(((IEntityDataSaver) this).getPersistentData(), this);
+  }
 }

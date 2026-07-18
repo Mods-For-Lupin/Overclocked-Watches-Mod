@@ -47,22 +47,38 @@ public class ModConfigIO {
       }
 
       // getters (loading from config file)
-      ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.setter().accept(Boolean.parseBoolean(config.getOrElse(ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.key(), String.valueOf(ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.getter().get().booleanValue()))));
-      ServerModConfig.DEFAULT_DAY_NIGHT_KEY.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.DEFAULT_DAY_NIGHT_KEY.key(), String.valueOf(ServerModConfig.DEFAULT_DAY_NIGHT_KEY.getter().get().longValue()))));
-      ServerModConfig.USE_LONG_TIME_DELTA.setter().accept(Boolean.parseBoolean(config.getOrElse(ServerModConfig.USE_LONG_TIME_DELTA.key(), String.valueOf(ServerModConfig.USE_LONG_TIME_DELTA.getter().get().booleanValue()))));
-      ServerModConfig.LONG_TIME_DELTA.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.LONG_TIME_DELTA.key(), String.valueOf(ServerModConfig.LONG_TIME_DELTA.getter().get().longValue()))));
-      ServerModConfig.GOLDEN_WATCH_DURABILITY.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.GOLDEN_WATCH_DURABILITY.key(), String.valueOf(ServerModConfig.GOLDEN_WATCH_DURABILITY.getter().get().longValue()))));
-      ServerModConfig.DIAMOND_WATCH_DURABILITY.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.DIAMOND_WATCH_DURABILITY.key(), String.valueOf(ServerModConfig.DIAMOND_WATCH_DURABILITY.getter().get().longValue()))));
-      ServerModConfig.NETHERITE_WATCH_DURABILITY.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.NETHERITE_WATCH_DURABILITY.key(), String.valueOf(ServerModConfig.NETHERITE_WATCH_DURABILITY.getter().get().longValue()))));
-      ServerModConfig.GOLDEN_WATCH_CHARGES.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.GOLDEN_WATCH_CHARGES.key(), String.valueOf(ServerModConfig.GOLDEN_WATCH_CHARGES.getter().get().longValue()))));
-      ServerModConfig.DIAMOND_WATCH_CHARGES.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.DIAMOND_WATCH_CHARGES.key(), String.valueOf(ServerModConfig.DIAMOND_WATCH_CHARGES.getter().get().longValue()))));
-      ServerModConfig.NETHERITE_WATCH_CHARGES.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.NETHERITE_WATCH_CHARGES.key(), String.valueOf(ServerModConfig.NETHERITE_WATCH_CHARGES.getter().get().longValue()))));
-      ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.key(), String.valueOf(ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.getter().get().longValue()))));
-      ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.key(), String.valueOf(ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.getter().get().longValue()))));
-      ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.key(), String.valueOf(ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.getter().get().longValue()))));
-      ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.key(), String.valueOf(ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.getter().get().longValue()))));
-      ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.key(), String.valueOf(ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.getter().get().longValue()))));
-      ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.setter().accept(Long.parseLong(config.getOrElse(ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.key(), String.valueOf(ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.getter().get().longValue()))));
+      ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.setter()
+          .accept(Boolean.parseBoolean(config.getOrElse(ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.key(), String.valueOf(ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.getter().get().booleanValue()))));
+      ServerModConfig.DEFAULT_DAY_NIGHT_KEY.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.DEFAULT_DAY_NIGHT_KEY.key(), String.valueOf(ServerModConfig.DEFAULT_DAY_NIGHT_KEY.getter().get().longValue()))));
+      ServerModConfig.USE_LONG_TIME_DELTA.setter()
+          .accept(Boolean.parseBoolean(config.getOrElse(ServerModConfig.USE_LONG_TIME_DELTA.key(), String.valueOf(ServerModConfig.USE_LONG_TIME_DELTA.getter().get().booleanValue()))));
+      ServerModConfig.LONG_TIME_DELTA.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.LONG_TIME_DELTA.key(), String.valueOf(ServerModConfig.LONG_TIME_DELTA.getter().get().longValue()))));
+      ServerModConfig.GOLDEN_WATCH_DURABILITY.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.GOLDEN_WATCH_DURABILITY.key(), String.valueOf(ServerModConfig.GOLDEN_WATCH_DURABILITY.getter().get().longValue()))));
+      ServerModConfig.DIAMOND_WATCH_DURABILITY.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.DIAMOND_WATCH_DURABILITY.key(), String.valueOf(ServerModConfig.DIAMOND_WATCH_DURABILITY.getter().get().longValue()))));
+      ServerModConfig.NETHERITE_WATCH_DURABILITY.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.NETHERITE_WATCH_DURABILITY.key(), String.valueOf(ServerModConfig.NETHERITE_WATCH_DURABILITY.getter().get().longValue()))));
+      ServerModConfig.GOLDEN_WATCH_CHARGES.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.GOLDEN_WATCH_CHARGES.key(), String.valueOf(ServerModConfig.GOLDEN_WATCH_CHARGES.getter().get().longValue()))));
+      ServerModConfig.DIAMOND_WATCH_CHARGES.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.DIAMOND_WATCH_CHARGES.key(), String.valueOf(ServerModConfig.DIAMOND_WATCH_CHARGES.getter().get().longValue()))));
+      ServerModConfig.NETHERITE_WATCH_CHARGES.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.NETHERITE_WATCH_CHARGES.key(), String.valueOf(ServerModConfig.NETHERITE_WATCH_CHARGES.getter().get().longValue()))));
+      ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.key(), String.valueOf(ServerModConfig.GOLDEN_WATCH_COOLDOWN_MINUTES.getter().get().longValue()))));
+      ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.key(), String.valueOf(ServerModConfig.DIAMOND_WATCH_COOLDOWN_MINUTES.getter().get().longValue()))));
+      ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.setter().accept(
+          Long.parseLong(config.getOrElse(ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.key(), String.valueOf(ServerModConfig.NETHERITE_WATCH_COOLDOWN_MINUTES.getter().get().longValue()))));
+      ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.key(), String.valueOf(ServerModConfig.GOLDEN_TIME_ADVANCEMENT_TICKS.getter().get().longValue()))));
+      ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.setter()
+          .accept(Long.parseLong(config.getOrElse(ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.key(), String.valueOf(ServerModConfig.DIAMOND_TIME_ADVANCEMENT_TICKS.getter().get().longValue()))));
+      ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.setter().accept(
+          Long.parseLong(config.getOrElse(ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.key(), String.valueOf(ServerModConfig.NETHERITE_TIME_ADVANCEMENT_TICKS.getter().get().longValue()))));
 
       // setters (saving to config file)
       config.setComment(ServerModConfig.DAY_NIGHT_CYCLE_ALLOWED.key(), " Range of chunks that the player cannot remain in. RELOADABLE WITH /reload");

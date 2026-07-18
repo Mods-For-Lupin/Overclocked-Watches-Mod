@@ -19,44 +19,45 @@ public class ForgeNetwork {
 //            PROTOCOL_VERSION::equals
 //    );
 
-    private static SimpleChannel INSTANCE;
+  private static SimpleChannel INSTANCE;
 
-    private static int packetId = 0;
-    private static int id() {
-        return packetId++;
-    }
+  private static int packetId = 0;
 
-    public static void register() {
+  private static int id() {
+    return packetId++;
+  }
 
-        SimpleChannel net = NetworkRegistry.ChannelBuilder
-                .named(OverclockedWatches.identifier("messages"))
-                .networkProtocolVersion(() -> "1.0")
-                .clientAcceptedVersions(s -> true)
-                .serverAcceptedVersions(s -> true)
-                .simpleChannel();
+  public static void register() {
 
-        INSTANCE = net;
+    SimpleChannel net = NetworkRegistry.ChannelBuilder
+        .named(OverclockedWatches.identifier("messages"))
+        .networkProtocolVersion(() -> "1.0")
+        .clientAcceptedVersions(s -> true)
+        .serverAcceptedVersions(s -> true)
+        .simpleChannel();
 
-        net.messageBuilder(ForgeDayNightC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ForgeDayNightC2SPacket::new)
-                .encoder(ForgeDayNightC2SPacket::toBytes)
-                .consumerMainThread(ForgeDayNightC2SPacket::handle)
-                .add();
+    INSTANCE = net;
 
-        net.messageBuilder(ForgeConfigSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ForgeConfigSyncS2CPacket::decode)
-                .encoder(ForgeConfigSyncS2CPacket::encode)
-                .consumerMainThread(ForgeConfigSyncS2CPacket::handle)
-                .add();
+    net.messageBuilder(ForgeDayNightC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+        .decoder(ForgeDayNightC2SPacket::new)
+        .encoder(ForgeDayNightC2SPacket::toBytes)
+        .consumerMainThread(ForgeDayNightC2SPacket::handle)
+        .add();
 
-        // net.registerMessage(id(), ForgeConfigSyncS2CPacket.class, ForgeConfigSyncS2CPacket::encode, ForgeConfigSyncS2CPacket::decode, ForgeConfigSyncS2CPacket::handle);
-    }
+    net.messageBuilder(ForgeConfigSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+        .decoder(ForgeConfigSyncS2CPacket::decode)
+        .encoder(ForgeConfigSyncS2CPacket::encode)
+        .consumerMainThread(ForgeConfigSyncS2CPacket::handle)
+        .add();
 
-    public static <MSG> void sendToServer(MSG message) {
-        INSTANCE.sendToServer(message);
-    }
+    // net.registerMessage(id(), ForgeConfigSyncS2CPacket.class, ForgeConfigSyncS2CPacket::encode, ForgeConfigSyncS2CPacket::decode, ForgeConfigSyncS2CPacket::handle);
+  }
 
-    public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
-        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
-    }
+  public static <MSG> void sendToServer(MSG message) {
+    INSTANCE.sendToServer(message);
+  }
+
+  public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
+    INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+  }
 }
