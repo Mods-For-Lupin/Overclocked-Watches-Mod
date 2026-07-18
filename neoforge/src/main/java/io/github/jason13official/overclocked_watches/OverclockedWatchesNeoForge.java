@@ -75,6 +75,17 @@ public class OverclockedWatchesNeoForge {
     NeoForge.EVENT_BUS.addListener((Consumer<PlayerEvent.PlayerLoggedInEvent>) consumer -> {
       Player player = consumer.getEntity();
       OverclockedWatchesUtil.loadCooldowns(player.getPersistentData(), player);
+      if (Services.PLATFORM.isDevelopmentEnvironment()) {
+        Constants.LOG.info("[OverclockedWatches] loadCooldowns on login for {}", player.getGameProfile().getName());
+      }
+    });
+
+    NeoForge.EVENT_BUS.addListener((Consumer<PlayerEvent.SaveToFile>) consumer -> {
+      Player player = consumer.getEntity();
+      OverclockedWatchesUtil.saveCooldowns(player.getPersistentData(), player);
+      if (Services.PLATFORM.isDevelopmentEnvironment()) {
+        Constants.LOG.info("[OverclockedWatches] saveCooldowns on SaveToFile for {}", player.getGameProfile().getName());
+      }
     });
 
     NeoForge.EVENT_BUS.addListener((Consumer<PlayerEvent.Clone>) consumer ->

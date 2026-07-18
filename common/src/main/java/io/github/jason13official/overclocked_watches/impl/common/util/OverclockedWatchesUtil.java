@@ -47,6 +47,9 @@ public class OverclockedWatchesUtil {
 
         }
       });
+      if (Services.PLATFORM.isDevelopmentEnvironment()) {
+        Constants.LOG.info("[OverclockedWatches] loaded {} cooldown(s) for {}", cooldowns.size(), player.getGameProfile().getName());
+      }
     }
   }
 
@@ -60,6 +63,9 @@ public class OverclockedWatchesUtil {
       cooldowns.add(cooldown);
     });
     tag.put(PERSISTENT_DATA_TAG, cooldowns);
+    if (Services.PLATFORM.isDevelopmentEnvironment()) {
+      Constants.LOG.info("[OverclockedWatches] saved {} cooldown(s) for {}", cooldowns.size(), player.getGameProfile().getName());
+    }
   }
 
   public static void copyCooldowns(Player oldPlayer, Player newPlayer) {

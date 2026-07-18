@@ -1,9 +1,11 @@
 package io.github.jason13official.overclocked_watches.impl.common.item;
 
+import io.github.jason13official.overclocked_watches.Constants;
 import io.github.jason13official.overclocked_watches.api.common.data.WatchItemData;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModDataComponents;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
+import io.github.jason13official.overclocked_watches.platform.Services;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -83,6 +85,11 @@ public class WatchItem extends Item {
 
     applyCooldowns(serverPlayer, 20 * 60 * this.getTier().getCooldownMinutes());
     // we have applied cooldowns
+
+    if (Services.PLATFORM.isDevelopmentEnvironment()) {
+      Constants.LOG.info("[OverclockedWatches] {} used {}, cooldown={}t, charges={}", serverPlayer.getGameProfile().getName(), this.getTier(),
+          20 * 60 * this.getTier().getCooldownMinutes(), itemInHand.get(ModDataComponents.CHARGES));
+    }
 
     return InteractionResultHolder.success(itemInHand);
   }
