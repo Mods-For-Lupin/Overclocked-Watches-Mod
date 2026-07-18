@@ -2,6 +2,7 @@ package io.github.jason13official.overclocked_watches.impl.client.item.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
 import io.github.jason13official.overclocked_watches.impl.client.item.model.ArmsModel;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.Services;
@@ -50,9 +51,11 @@ public class WatchRenderer implements IWatchRenderer {
 
   @Nullable
   public static WatchRenderer getGloveRenderer(ItemStack stack) {
+
     if (!stack.isEmpty() && Services.PLATFORM.getWatchRenderer(stack.getItem()) instanceof WatchRenderer gloveRenderer) {
       return gloveRenderer;
     }
+
     return null;
   }
 

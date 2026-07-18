@@ -5,7 +5,7 @@ import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketsApi;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
-import io.github.jason13official.overclocked_watches.impl.client.item.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.services.IPlatformHelper;
 import java.nio.file.Path;
@@ -70,8 +70,8 @@ public class FabricPlatformHelper implements IPlatformHelper {
   @Override
   public <T extends Item> IWatchRenderer getWatchRenderer(T item) {
     Optional<TrinketRenderer> renderer = TrinketRendererRegistry.getRenderer(item);
-    if (renderer.isPresent() && renderer.get() instanceof WatchTrinketRenderer artifactTrinketRenderer) {
-      return artifactTrinketRenderer.renderer();
+    if (renderer.isPresent() && renderer.get() instanceof WatchTrinketRenderer trinketRenderer) {
+      return trinketRenderer.renderer();
     }
     return null;
   }

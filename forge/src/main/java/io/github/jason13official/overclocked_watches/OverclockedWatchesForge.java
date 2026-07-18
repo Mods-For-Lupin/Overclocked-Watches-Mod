@@ -6,13 +6,12 @@ import io.github.jason13official.overclocked_watches.impl.common.network.packet.
 import io.github.jason13official.overclocked_watches.core.network.packet.ForgeConfigSyncS2CPacket;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
-import io.github.jason13official.overclocked_watches.impl.common.registry.ModBlocks;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModTabs;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
-import io.github.jason13official.overclocked_watches.impl.common.world.item.WatchItem;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchItem;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -53,7 +52,6 @@ public class OverclockedWatchesForge {
 
     OverclockedWatches.init();
 
-    bind(Registries.BLOCK, ModBlocks::register);
     bind(Registries.ITEM, ModItems::register);
     bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
     bind(Registries.PARTICLE_TYPE, ModParticles::register);

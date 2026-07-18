@@ -1,7 +1,7 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
-import io.github.jason13official.overclocked_watches.impl.common.util.CoolDownRecord;
-import io.github.jason13official.overclocked_watches.impl.common.util.IItemCooldowns;
+import io.github.jason13official.overclocked_watches.api.common.data.CoolDownRecord;
+import io.github.jason13official.overclocked_watches.api.common.data.IItemCooldowns;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.world.item.Item;
@@ -25,14 +25,14 @@ public abstract class ItemCooldownsMixin implements IItemCooldowns {
   @Shadow
   public abstract void addCooldown(Item var1, int var2);
 
-  public List<CoolDownRecord> persistcd$getCooldownTicks() {
+  public List<CoolDownRecord> overclocked_watches$getCooldownTicks() {
     return this.cooldowns.entrySet().stream().map((e) -> {
       AccessorCooldownInstance instance = (AccessorCooldownInstance) e.getValue();
       return new CoolDownRecord(e.getKey(), instance.getEndTime() - this.tickCount, instance.getEndTime() - instance.getStartTime());
     }).toList();
   }
 
-  public void persistcd$addCoolDown(CoolDownRecord cd) {
+  public void overclocked_watches$addCoolDown(CoolDownRecord cd) {
     this.addCooldown(cd.item(), 50000);
     AccessorCooldownInstance instance = (AccessorCooldownInstance) this.cooldowns.get(cd.item());
     int end = this.tickCount + cd.remain();

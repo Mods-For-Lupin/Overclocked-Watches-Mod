@@ -4,11 +4,10 @@ import io.github.jason13official.overclocked_watches.core.network.FabricNetwork;
 import io.github.jason13official.overclocked_watches.core.network.packet.FabricConfigSyncS2CPacket;
 import io.github.jason13official.overclocked_watches.impl.common.ModConfigIO;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
-import io.github.jason13official.overclocked_watches.impl.common.registry.ModBlocks;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModTabs;
-import io.github.jason13official.overclocked_watches.impl.common.util.IEntityDataSaver;
+import io.github.jason13official.overclocked_watches.api.common.data.IEntityDataSaver;
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.impl.common.util.TimeManager;
 import io.github.jason13official.overclocked_watches.platform.Services;
@@ -34,7 +33,6 @@ public class OverclockedWatchesFabric implements ModInitializer {
 
     OverclockedWatches.init();
 
-    bind(BuiltInRegistries.BLOCK, ModBlocks::register);
     bind(BuiltInRegistries.ITEM, ModItems::register);
     bind(BuiltInRegistries.CREATIVE_MODE_TAB, ModTabs::register);
     bind(BuiltInRegistries.PARTICLE_TYPE, ModParticles::register);
@@ -51,7 +49,7 @@ public class OverclockedWatchesFabric implements ModInitializer {
       if (!(entity instanceof ServerPlayer player)) {
         return;
       }
-      OverclockedWatchesUtil.loadCooldowns(((IEntityDataSaver) player).getPersistentData(), player);
+      OverclockedWatchesUtil.loadCooldowns(((IEntityDataSaver) player).overclocked_watches$getPersistentData(), player);
     });
 
 //        ServerPlayerEvents.AFTER_RESPAWN.register((entity, world, isAlive) -> {

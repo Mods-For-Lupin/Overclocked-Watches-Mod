@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketsApi;
 import io.github.jason13official.overclocked_watches.impl.client.item.renderer.WatchRenderer;
-import io.github.jason13official.overclocked_watches.impl.common.world.item.WatchItem;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchItem;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;

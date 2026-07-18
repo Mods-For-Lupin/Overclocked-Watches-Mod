@@ -1,6 +1,6 @@
 package io.github.jason13official.overclocked_watches.mixin;
 
-import io.github.jason13official.overclocked_watches.impl.common.util.IEntityDataSaver;
+import io.github.jason13official.overclocked_watches.api.common.data.IEntityDataSaver;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +18,7 @@ public abstract class FabricEntityMixin implements IEntityDataSaver {
   private CompoundTag persistentData;
 
   @Override
-  public CompoundTag getPersistentData() {
+  public CompoundTag overclocked_watches$getPersistentData() {
     if (this.persistentData == null) {
       this.persistentData = new CompoundTag();
     }

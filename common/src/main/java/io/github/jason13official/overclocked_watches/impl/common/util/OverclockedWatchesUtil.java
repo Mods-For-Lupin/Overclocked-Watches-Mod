@@ -1,10 +1,13 @@
 package io.github.jason13official.overclocked_watches.impl.common.util;
 
 import io.github.jason13official.overclocked_watches.Constants;
+import io.github.jason13official.overclocked_watches.api.common.data.CoolDownRecord;
+import io.github.jason13official.overclocked_watches.api.common.data.IEntityDataSaver;
+import io.github.jason13official.overclocked_watches.api.common.data.IItemCooldowns;
 import io.github.jason13official.overclocked_watches.impl.common.ServerModConfig;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModParticles;
-import io.github.jason13official.overclocked_watches.impl.common.world.item.WatchItem;
+import io.github.jason13official.overclocked_watches.impl.common.item.WatchItem;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import java.util.Objects;
 import net.minecraft.ResourceLocationException;
@@ -23,7 +26,7 @@ public class OverclockedWatchesUtil {
 
   public static void loadCooldowns(CompoundTag data, Player player) {
     if (Services.PLATFORM.getPlatformName().equalsIgnoreCase("fabric")) {
-      data = ((IEntityDataSaver) player).getPersistentData();
+      data = ((IEntityDataSaver) player).overclocked_watches$getPersistentData();
     }
     if (data.contains("ocw.watch_data")) {
       ListTag cooldowns = data.getList("ocw.watch_data", Tag.TAG_COMPOUND);
@@ -32,17 +35,11 @@ public class OverclockedWatchesUtil {
           try {
             ResourceLocation rl = new ResourceLocation(compoundTag.getString("item"));
             Item item = Services.PLATFORM.getItemFromRL(rl);
-//                        if (item == null || item.equals(Items.AIR)) {
-//                            return;
-//                        }
-//                        if (!item.equals(ModItems.GOLDEN_WATCH) && !item.equals(ModItems.DIAMOND_WATCH) && !item.equals(ModItems.NETHERITE_WATCH)) {
-//                            return;
-//                        }
             if (item != (ModItems.GOLDEN_WATCH) && item != (ModItems.DIAMOND_WATCH) && item != (ModItems.NETHERITE_WATCH)) {
               return;
             }
             player.getCooldowns().removeCooldown(item);
-            ((IItemCooldowns) player.getCooldowns()).persistcd$addCoolDown(new CoolDownRecord(item, compoundTag.getInt("remain"), compoundTag.getInt("total")));
+            ((IItemCooldowns) player.getCooldowns()).overclocked_watches$addCoolDown(new CoolDownRecord(item, compoundTag.getInt("remain"), compoundTag.getInt("total")));
           } catch (ResourceLocationException e) {
             Constants.LOG.error("Failed to parse item, that's weird.", e);
           }
@@ -54,7 +51,7 @@ public class OverclockedWatchesUtil {
 
   public static void saveCooldowns(CompoundTag tag, Player player) {
     ListTag cooldowns = new ListTag();
-    ((IItemCooldowns) player.getCooldowns()).persistcd$getCooldownTicks().forEach((r) -> {
+    ((IItemCooldowns) player.getCooldowns()).overclocked_watches$getCooldownTicks().forEach((r) -> {
       CompoundTag cooldown = new CompoundTag();
       cooldown.putString("item", Objects.requireNonNull(Services.PLATFORM.getRLFromItem(r.item())).toString());
       cooldown.putInt("remain", r.remain());
@@ -96,15 +93,15 @@ public class OverclockedWatchesUtil {
   public static boolean handleNetheriteWatchTag(ItemStack itemStack) {
 
     CompoundTag baseTag = itemStack.getOrCreateTag();
-    if (!baseTag.contains(WatchItem.CHARGES)) {
-      baseTag.put(WatchItem.CHARGES, IntTag.valueOf((int) ServerModConfig.netheriteWatchCharges));
+    if (!baseTag.contains(WatchItem.CHARGES_TAG)) {
+      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf((int) ServerModConfig.netheriteWatchCharges));
     }
 
-    int currentCharges = baseTag.getInt(WatchItem.CHARGES);
+    int currentCharges = baseTag.getInt(WatchItem.CHARGES_TAG);
 
     if (currentCharges > 0) {
       currentCharges -= 1;
-      baseTag.put(WatchItem.CHARGES, IntTag.valueOf(currentCharges));
+      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf(currentCharges));
       return true;
     }
 
@@ -114,15 +111,15 @@ public class OverclockedWatchesUtil {
   public static boolean handleDiamondWatchTag(ItemStack itemStack) {
 
     CompoundTag baseTag = itemStack.getOrCreateTag();
-    if (!baseTag.contains(WatchItem.CHARGES)) {
-      baseTag.put(WatchItem.CHARGES, IntTag.valueOf((int) ServerModConfig.diamondWatchCharges));
+    if (!baseTag.contains(WatchItem.CHARGES_TAG)) {
+      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf((int) ServerModConfig.diamondWatchCharges));
     }
 
-    int currentCharges = baseTag.getInt(WatchItem.CHARGES);
+    int currentCharges = baseTag.getInt(WatchItem.CHARGES_TAG);
 
     if (currentCharges > 0) {
       currentCharges -= 1;
-      baseTag.put(WatchItem.CHARGES, IntTag.valueOf(currentCharges));
+      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf(currentCharges));
       return true;
     }
 
@@ -132,15 +129,15 @@ public class OverclockedWatchesUtil {
   public static boolean handleGoldenWatchTag(ItemStack itemStack) {
 
     CompoundTag baseTag = itemStack.getOrCreateTag();
-    if (!baseTag.contains(WatchItem.CHARGES)) {
-      baseTag.put(WatchItem.CHARGES, IntTag.valueOf((int) ServerModConfig.goldenWatchCharges));
+    if (!baseTag.contains(WatchItem.CHARGES_TAG)) {
+      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf((int) ServerModConfig.goldenWatchCharges));
     }
 
-    int currentCharges = baseTag.getInt(WatchItem.CHARGES);
+    int currentCharges = baseTag.getInt(WatchItem.CHARGES_TAG);
 
     if (currentCharges > 0) {
       currentCharges -= 1;
-      baseTag.put(WatchItem.CHARGES, IntTag.valueOf(currentCharges));
+      baseTag.put(WatchItem.CHARGES_TAG, IntTag.valueOf(currentCharges));
       return true;
     }
 

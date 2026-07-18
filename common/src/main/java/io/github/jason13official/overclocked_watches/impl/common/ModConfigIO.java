@@ -10,7 +10,7 @@ import java.nio.file.StandardCopyOption;
 
 public class ModConfigIO {
 
-  // TODO translate old config file to new format
+  // TODO translate old config file to new format (keys were in camelCaseLikeThis, compared to current snake_case_like_this)
   private static final String OLD_CONFIG_FILE = Constants.MOD_ID + "-common.toml";
 
   public static void load(Path configDir) {

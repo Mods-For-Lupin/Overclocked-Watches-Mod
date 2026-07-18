@@ -12,7 +12,7 @@ public class DayNightKeyPressHandler {
 
   public static void handle(ClientLevel level, LocalPlayer player) {
 
-    long pAmount = resolvePAmount(player.getMainHandItem().getItem());
+    long pAmount = getTimeAdvanceAmount(player.getMainHandItem().getItem());
 
     if (!ServerModConfig.useLongTimeDelta) {
       level.setDayTime(level.getDayTime() + pAmount);
@@ -24,7 +24,7 @@ public class DayNightKeyPressHandler {
     player.playSound(SoundEvents.BELL_RESONATE, 1, 1);
   }
 
-  private static long resolvePAmount(Item mainHandItem) {
+  private static long getTimeAdvanceAmount(Item mainHandItem) {
     if (mainHandItem == ModItems.NETHERITE_WATCH) {
       return ServerModConfig.netheriteTimeAdvancementTicks;
     }

@@ -1,7 +1,7 @@
 package io.github.jason13official.overclocked_watches.platform;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.jason13official.overclocked_watches.impl.client.item.renderer.IWatchRenderer;
+import io.github.jason13official.overclocked_watches.api.client.renderer.IWatchRenderer;
 import io.github.jason13official.overclocked_watches.impl.common.registry.ModItems;
 import io.github.jason13official.overclocked_watches.platform.services.IPlatformHelper;
 import java.nio.file.Path;
@@ -73,8 +73,8 @@ public class ForgePlatformHelper implements IPlatformHelper {
   @Override
   public IWatchRenderer getWatchRenderer(Item item) {
     Optional<ICurioRenderer> renderer = CuriosRendererRegistry.getRenderer(item);
-    if (renderer.isPresent() && renderer.get() instanceof WatchCurioRenderer artifactTrinketRenderer) {
-      return artifactTrinketRenderer.renderer();
+    if (renderer.isPresent() && renderer.get() instanceof WatchCurioRenderer curioRenderer) {
+      return curioRenderer.renderer();
     }
     return null;
   }

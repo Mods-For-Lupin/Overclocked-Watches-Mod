@@ -1,7 +1,7 @@
-package io.github.jason13official.overclocked_watches.impl.client.item.renderer;
+package io.github.jason13official.overclocked_watches.api.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.jason13official.overclocked_watches.Constants;
+import io.github.jason13official.overclocked_watches.OverclockedWatches;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -21,35 +21,33 @@ public interface IWatchRenderer {
       path.append(name);
     }
     path.append(".png");
-    return new ResourceLocation(Constants.MOD_ID, path.toString());
+    return OverclockedWatches.identifier(path.toString());
   }
 
   static void followBodyRotations(final LivingEntity livingEntity, final HumanoidModel<LivingEntity> model) {
+
     EntityRenderer<? super LivingEntity> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(livingEntity);
 
-    if (renderer instanceof LivingEntityRenderer) {
-      @SuppressWarnings("unchecked")
-      LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> livingRenderer = (LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>) renderer;
-      EntityModel<LivingEntity> entityModel = livingRenderer.getModel();
-
-      if (entityModel instanceof HumanoidModel<LivingEntity> bipedModel) {
-        bipedModel.copyPropertiesTo(model);
-      }
+    if (!(renderer instanceof LivingEntityRenderer)) {
+      return;
     }
+
+    @SuppressWarnings("unchecked") LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> livingRenderer = (LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>) renderer;
+    EntityModel<LivingEntity> entityModel = livingRenderer.getModel();
+
+    if (!(entityModel instanceof HumanoidModel<LivingEntity> bipedModel)) {
+      return;
+    }
+
+    bipedModel.copyPropertiesTo(model);
   }
 
   void render(
-      ItemStack stack,
-      LivingEntity entity,
+      ItemStack stack, LivingEntity entity,
       int slotIndex,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
+      PoseStack poseStack, MultiBufferSource multiBufferSource,
       int light,
-      float limbSwing,
-      float limbSwingAmount,
-      float partialTicks,
-      float ageInTicks,
-      float netHeadYaw,
-      float headPitch
-  );
+      float limbSwing, float limbSwingAmount,
+      float partialTicks, float ageInTicks,
+      float netHeadYaw, float headPitch);
 }
