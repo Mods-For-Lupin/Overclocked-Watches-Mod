@@ -1,40 +1,41 @@
 {
-    "schemaVersion": 1,
-    "id": "${mod_id}",
-    "version": "${version}",
-    "name": "${mod_name}",
-    "description": "${description}\n${credits}",
-    "authors": [
-        "${mod_author}"
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${description}\n${credits}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Mods-For-Lupin",
+    "sources": "https://github.com/Mods-For-Lupin"
+  },
+  "license": "${license}",
+  "icon": "${mod_id}.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.jason13official.overclocked_watches.OverclockedWatchesFabric"
     ],
-    "contact": {
-        "homepage": "https://github.com/Mods-For-Lupin",
-        "sources": "https://github.com/Mods-For-Lupin"
-    },
-    "license": "${license}",
-    "icon": "${mod_id}.png",
-    "environment": "*",
-    "entrypoints": {
-        "main": [
-          "io.github.jason13official.overclocked_watches.OverclockedWatchesFabric"
-        ],
-        "client": [
-          "io.github.jason13official.overclocked_watches.OverclockedWatchesClientFabric"
-        ]
-    },
-    "mixins": [
-        "${mod_id}.mixins.json",
-        "${mod_id}.fabric.mixins.json"
-    ],
-    "depends": {
-        "fabricloader": ">=0.14",
-        "fabric": "*",
-        "minecraft": "${minecraft_version}",
-        "java": ">=17",
-        "trinkets": ">=3.7.0"
-    },
-    "suggests": {
-        "another-mod": "*"
-    }
+    "client": [
+      "io.github.jason13official.overclocked_watches.OverclockedWatchesClientFabric"
+    ]
+  },
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}",
+    "java": ">=17",
+    "trinkets": ">=3.7.0"
+  },
+  "suggests": {
+    "another-mod": "*"
+  },
+  "accessWidener": "overclocked_watches.accesswidener"
 }
   
