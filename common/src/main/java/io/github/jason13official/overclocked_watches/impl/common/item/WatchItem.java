@@ -7,9 +7,12 @@ import io.github.jason13official.overclocked_watches.impl.common.registry.ModIte
 import io.github.jason13official.overclocked_watches.impl.common.util.OverclockedWatchesUtil;
 import io.github.jason13official.overclocked_watches.platform.Services;
 import java.util.List;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -90,6 +93,10 @@ public class WatchItem extends Item {
       Constants.LOG.info("[OverclockedWatches] {} used {}, cooldown={}t, charges={}", serverPlayer.getGameProfile().getName(), this.getTier(),
           20 * 60 * this.getTier().getCooldownMinutes(), itemInHand.get(ModDataComponents.CHARGES));
     }
+
+    serverPlayer.serverLevel().playLocalSound(player.position().x, player.position().y, player.position().z, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.5f, 0.5f, false);
+    serverPlayer.serverLevel().addParticle(ParticleTypes.END_ROD, player.position().x, player.position().y, player.position().z, 0, 0.005, 0);
+    serverPlayer.sendSystemMessage(Component.translatable("magic.overclocked_watches.charge_consumed"));
 
     return InteractionResultHolder.success(itemInHand);
   }

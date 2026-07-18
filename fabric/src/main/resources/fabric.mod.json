@@ -30,10 +30,13 @@
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
         "minecraft": "${minecraft_version}",
-        "java": ">=${java_version}"
+        "java": ">=${java_version}",
+        "monolib": "*",
+        "trinkets": "*"
     },
     "suggests": {
         "another-mod": "*"
-    }
+    },
+  "accessWidener": "overclocked_watches.accesswidener"
 }
   
